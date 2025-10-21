@@ -56,8 +56,7 @@ public class LoginController : MonoBehaviour
 
     private void HandleQuit()
     {
-        Debug.Log("게임 종료");
-
+        Debug.Log("Game Quit");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else

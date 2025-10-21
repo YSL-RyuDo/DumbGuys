@@ -13,6 +13,10 @@ public class PlayerCharacter : MonoBehaviour
     public Transform CameraTransform => cameraTransform;
 
     private CharacterState currentState;
+    private bool inputLocked = false; // 입력 잠금 상태 추가
+
+    private float sendInterval = 0.1f;
+    private float sendTimer = 0f;
 
     void Awake()
     {
@@ -24,10 +28,26 @@ public class PlayerCharacter : MonoBehaviour
 
     void Update()
     {
+        // 입력이 잠금 상태라면 아무것도 하지 않음
+        if (inputLocked)
+        {
+            animator.SetFloat("Hor", 0);
+            animator.SetFloat("Vert", 0);
+            return;
+        }
+
         currentState?.HandleInput();
         currentState?.Update();
 
         UpdateAnimator();
+
+        // === 매 순간 (주기적으로) 패킷 전송 ===
+        sendTimer += Time.deltaTime;
+        if (sendTimer >= sendInterval)
+        {
+            sendTimer = 0f;
+            SendMovePacket();
+        }
     }
 
     public void ChangeState(CharacterState newState)
@@ -46,20 +66,49 @@ public class PlayerCharacter : MonoBehaviour
 
     private void UpdateAnimator()
     {
-        // 이동 입력값
         float hor = Input.GetAxisRaw("Horizontal");
         float vert = Input.GetAxisRaw("Vertical");
 
         animator.SetFloat("Hor", hor);
         animator.SetFloat("Vert", vert);
-
-        // 땅에 닿아있는지 여부만 처리
         animator.SetBool("IsGrounded", motor.IsGrounded());
-        // 점프 애니메이션은 JumpState에서 SetJumping()으로 관리
     }
 
     public void SetJumping(bool isJumping)
     {
         animator.SetBool("IsJump", isJumping);
+    }
+
+    private void SendMovePacket()
+    {
+        if (NetworkManager.Instance == null || !ClientSession.Instance.IsLoggedIn)
+            return;
+
+        Vector3 pos = transform.position;
+        Quaternion rot = transform.rotation;
+
+        var packet = new MovePacket
+        {
+            nickname = ClientSession.Instance.Nickname,
+            px = pos.x,
+            py = pos.y,
+            pz = pos.z,
+            rx = rot.eulerAngles.x,
+            ry = rot.eulerAngles.y,
+            rz = rot.eulerAngles.z
+        };
+
+        NetworkManager.Instance.SendJson(packet);
+    }
+
+    public void SetInputLocked(bool locked)
+    {
+        inputLocked = locked;
+        if (locked)
+        {
+            motor.Move(Vector3.zero);
+            animator.SetFloat("Hor", 0);
+            animator.SetFloat("Vert", 0);
+        }
     }
 }

@@ -23,6 +23,13 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        // 씬이 바뀔 때 마우스 해제
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
     void LateUpdate()
     {
         if (!target) return;
