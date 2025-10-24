@@ -24,6 +24,11 @@ public class LobbyManager : MonoBehaviour
         var appearanceReq = new AppearanceRequest { nickname = nickname };
         NetworkManager.Instance.SendJson(appearanceReq);
         Debug.Log($"[Client] Requested appearance info for: {nickname}");
+
+        // 3. 튜토리얼 요청
+        var TutorialReq = new TutorialInfoRequest { nickname = nickname };
+        NetworkManager.Instance.SendJson(TutorialReq);
+
     }
 
     private void OnEnable()
@@ -56,5 +61,27 @@ public class LobbyManager : MonoBehaviour
                 characterAppearance.ApplyAppearance(info);
             });
         }
+        else if (json.Contains("\"type\":\"tutorial_info\""))
+        {
+            var res = JsonUtility.FromJson<TutorialInfoResponse>(json);
+            Debug.Log($"[Client] Tutorial info received. tutorialDone = {res.tutorialDone}");
+
+            if (res.tutorialDone)
+            {
+                // 이미 튜토리얼 완료한 상태로 설정
+                if (TutorialManager.Instance != null)
+                {
+                    TutorialManager.Instance.MarkTutorialCompleted();
+                    Debug.Log("[Client] Tutorial already completed. Skipping tutorial.");
+                }
+                return;
+            }
+
+            // 아직 완료하지 않았다면 튜토리얼 시작
+            if (TutorialManager.Instance != null)
+                TutorialManager.Instance.StartTutorial();
+        }
+
+
     }
 }

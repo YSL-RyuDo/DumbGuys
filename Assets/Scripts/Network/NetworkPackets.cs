@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Annotations;
 
 //
 // === 공용 패킷 구조 ===
@@ -53,6 +54,29 @@ public class AppearanceResponse
     public int Outerwear;
     public int Pants;
     public int Shoes;
+}
+
+[Serializable]
+public class TutorialInfoRequest
+{
+    public string cmd = "get_tutorial_info"; // 서버로 보낼 명령 이름
+    public string nickname;                  // 요청 대상 플레이어
+}
+
+
+[Serializable]
+public class TutorialInfoResponse
+{
+    public string type = "tutorial_info";  // 서버에서 식별용
+    public string nickname;
+    public bool tutorialDone;              // 튜토리얼 완료 여부
+}
+
+[System.Serializable]
+public class TutorialCompleteRequest
+{
+    public string cmd = "set_tutorial_done";
+    public string nickname;
 }
 
 
@@ -210,3 +234,5 @@ public class LeaveRoomPacket
     public string cmd = "leave_room";
     public string nickname;
 }
+
+

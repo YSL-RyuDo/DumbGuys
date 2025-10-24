@@ -151,6 +151,14 @@ public class NetworkManager : MonoBehaviour
                     });
                     return;
 
+                case "tutorial_info": // 튜토리얼 정보 수신 처리 추가
+                    Debug.Log("[Client] Received tutorial info packet.");
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        OnMessageReceived?.Invoke(json);
+                    });
+                    return;
+
                 case "enemy_info":
                     Debug.Log("[Client] Received enemy appearance info packet.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
