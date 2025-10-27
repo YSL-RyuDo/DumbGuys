@@ -29,6 +29,7 @@ public class LobbyButtonHandler : MonoBehaviour
     [SerializeField] private Image modeButtonIcon;
 
     [Header("Sprites")]
+    [SerializeField] private Sprite MultiSourceImage;
     [SerializeField] private Sprite tutorial0SourceImage;
     [SerializeField] private Sprite tutorial1SourceImage;
     [SerializeField] private Sprite map0SourceImage;
@@ -152,12 +153,16 @@ public class LobbyButtonHandler : MonoBehaviour
         if (tutorial != null && !tutorial.IsTutorialCompleted)
         {
             Debug.Log("[Lobby] MultiPlay clicked (Tutorial Active)");
-            tutorial.OnOtherButtonClicked(); // 튜토리얼 중에는 금지
+            tutorial.OnOtherButtonClicked();
             return;
         }
 
         Debug.Log("[Lobby] MultiPlay clicked (Normal Mode)");
         isMultiMode = true;
+
+        SetModeButtonSprite("Multi"); // 기본 맵 이미지로 스프라이트 설정
+        selectedSceneName = "LoadingScene"; // 바로 로딩씬으로 지정
+
 
         if (gameModeUI != null)
             gameModeUI.SetActive(false);
@@ -217,7 +222,7 @@ public class LobbyButtonHandler : MonoBehaviour
         SetGameModeUIActive(false);
         SetTutorialPanelActive(false);
         UpdateTutorialSelectionUI(map0Button);
-        selectedSceneName = "Map0Scene";
+        selectedSceneName = "TestMap0Scene";
     }
 
     public void OnClickMap1()
@@ -227,7 +232,7 @@ public class LobbyButtonHandler : MonoBehaviour
         SetGameModeUIActive(false);
         SetTutorialPanelActive(false);
         UpdateTutorialSelectionUI(map1Button);
-        selectedSceneName = "Map1Scene";
+        selectedSceneName = "TestMap1Scene";
     }
 
     public void OnClickMap2()
@@ -237,7 +242,7 @@ public class LobbyButtonHandler : MonoBehaviour
         SetGameModeUIActive(false);
         SetTutorialPanelActive(false);
         UpdateTutorialSelectionUI(map2Button);
-        selectedSceneName = "Map2Scene";
+        selectedSceneName = "TestMap2Scene";
     }
     private void UpdateTutorialSelectionUI(Button selected)
     {
@@ -343,6 +348,7 @@ public class LobbyButtonHandler : MonoBehaviour
     {
         switch (key)
         {
+            case "Multi": modeButtonIcon.sprite = MultiSourceImage; break;
             case "Tutorial0": modeButtonIcon.sprite = tutorial0SourceImage; break;
             case "Tutorial1": modeButtonIcon.sprite = tutorial1SourceImage; break;
             case "Map0": modeButtonIcon.sprite = map0SourceImage; break;
