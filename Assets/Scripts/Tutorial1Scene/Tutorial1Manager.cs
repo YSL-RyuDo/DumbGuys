@@ -62,9 +62,9 @@ public class Tutorial1Manager : MonoBehaviour
         if (data.nickname != ClientSession.Instance.Nickname) return;
 
         playerAppearance.ApplyAppearance(data);
-        var player = FindFirstObjectByType<PlayerCharacter>();
-        if (player != null)
-            player.SetInputLocked(false);
+        //var player = FindFirstObjectByType<PlayerCharacter>();
+        //if (player != null)
+        //    player.SetInputLocked(false);
 
         Debug.Log("[Tutorial1] Player appearance applied and input unlocked.");
     }

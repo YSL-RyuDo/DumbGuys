@@ -100,7 +100,7 @@ public class GameSceneController : MonoBehaviour
                 enemyAppearance.ApplyAppearance(data);
 
             var player = FindFirstObjectByType<PlayerCharacter>();
-            player.SetInputLocked(false);
+            //player.SetInputLocked(false);
 
         }
         else if (json.Contains("\"type\":\"enemy_move\""))
@@ -123,7 +123,95 @@ public class GameSceneController : MonoBehaviour
                 enemyAnimator.SetBool("IsJump", Mathf.Abs(delta.y) > 0.05f);
             }
         }
+        else if (json.Contains("\"type\":\"player_hit\""))
+        {
+            var data = JsonUtility.FromJson<PlayerHitPacket>(json);
+            Debug.Log($"[GameScene] Player hit → {data.attacker} attacked {data.target} for {data.damage} damage.");
 
+            // 공격자와 피격자 닉네임 확인
+            string myNickname = ClientSession.Instance.Nickname;
+
+            // 피격 대상 오브젝트 찾기
+            CharacterAppearance hitTarget = null;
+            if (data.target == myNickname)
+                hitTarget = playerAppearance;
+            else if (data.target == enemyNickname)
+                hitTarget = enemyAppearance;
+
+            if (hitTarget != null)
+            {
+                Debug.Log($"[GameScene] Applying hit animation to {hitTarget.name} ({data.target})");
+
+                // 피격 애니메이션 트리거
+                var animator = hitTarget.GetComponentInChildren<Animator>();
+                if (animator != null)
+                {
+                    animator.SetTrigger("Hit");
+                }
+
+                // 본인이 맞은 경우에는 체력 처리도 수행
+                if (data.target == myNickname)
+                {
+                    var player = FindFirstObjectByType<PlayerCharacter>();
+                    if (player != null)
+                    {
+                        player.TakeDamage(data.damage);
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"[GameScene] Could not find target {data.target} in scene.");
+            }
+        }
+        else if (json.Contains("\"type\":\"enemy_attack_anim\""))
+        {
+            var data = JsonUtility.FromJson<EnemyAttackAnimPacket>(json);
+            Debug.Log($"[GameScene] Enemy {data.attacker} triggered attack animation.");
+
+            // 태그가 "Enemy"인 모든 오브젝트를 탐색
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+            foreach (var enemy in enemies)
+            {
+                // 닉네임 일치하는 적 찾기
+                if (enemy.name == data.attacker)
+                {
+                    var animator = enemy.GetComponentInChildren<Animator>();
+                    if (animator != null)
+                    {
+                        animator.SetTrigger("Attack");
+                        Debug.Log($"[GameScene] Triggered Attack animation on enemy '{enemy.name}'");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[GameScene] Enemy '{enemy.name}' has no Animator component.");
+                    }
+                    return; // 해당 적 찾았으면 종료
+                }
+            }
+
+            Debug.LogWarning($"[GameScene] Could not find enemy with name '{data.attacker}' among tagged Enemies.");
+        }
+        else if (json.Contains("\"type\":\"enemy_die_anim\""))
+        {
+            var data = JsonUtility.FromJson<EnemyDieAnimPacket>(json);
+            Debug.Log($"[GameScene] Enemy {data.attacker} died → playing death animation.");
+
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            foreach (var enemy in enemies)
+            {
+                if (enemy.name == data.attacker)
+                {
+                    var animator = enemy.GetComponentInChildren<Animator>();
+                    if (animator != null)
+                    {
+                        animator.SetTrigger("Die");
+                        Debug.Log($"[GameScene] Played 'Die' animation on enemy '{enemy.name}'.");
+                    }
+                }
+            }
+        }
         else if (json.Contains("\"type\":\"score_update\""))
         {
             var data = JsonUtility.FromJson<ScoreUpdatePacket>(json);
@@ -139,12 +227,11 @@ public class GameSceneController : MonoBehaviour
                 scorePanel.SetActive(true);
 
             var player = FindFirstObjectByType<PlayerCharacter>();
-            if (player != null)
-                player.SetInputLocked(true);
+            //if (player != null)
+            //    player.SetInputLocked(true);
 
             Debug.Log($"[GameScene] Score Updated → {playerScore}:{enemyScore}");
         }
-
         else if (json.Contains("\"type\":\"round_end\""))
         {
             Debug.Log("[GameScene] Round ended → returning to ChooseScene in 5 seconds...");
@@ -182,13 +269,26 @@ public class GameSceneController : MonoBehaviour
             playerSpawnPos = "B";
         }
 
+        // 위치 배치
         playerAppearance.transform.position = playerSpawn.position;
         enemyAppearance.transform.position = enemySpawn.position;
 
         playerAppearance.transform.LookAt(enemyAppearance.transform);
         enemyAppearance.transform.LookAt(playerAppearance.transform);
 
-        StartCoroutine(RequestAppearancesDelayed(data.enemyNickname));
+        // 태그와 이름 지정
+        string myNickname = data.playerNickname;
+        string enemyNick = data.enemyNickname;
+
+        playerAppearance.tag = "Player";
+        playerAppearance.name = myNickname;
+
+        enemyAppearance.tag = "Enemy";
+        enemyAppearance.name = enemyNick;
+
+        Debug.Log($"[GameScene] Tag/Name Assigned → Player: {playerAppearance.name} (Tag={playerAppearance.tag}), Enemy: {enemyAppearance.name} (Tag={enemyAppearance.tag})");
+
+        StartCoroutine(RequestAppearancesDelayed(enemyNick));
     }
 
     private IEnumerator RequestAppearancesDelayed(string enemyNick)

@@ -70,8 +70,8 @@ public class Tutorial0Manager : MonoBehaviour
 
         playerAppearance.ApplyAppearance(data);
         var player = FindFirstObjectByType<PlayerCharacter>();
-        if (player != null)
-            player.SetInputLocked(false);
+        //if (player != null)
+        //    player.SetInputLocked(false);
 
         Debug.Log("[Tutorial0] Player appearance applied and input unlocked.");
     }

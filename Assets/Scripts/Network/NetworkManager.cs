@@ -208,7 +208,6 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke("Waiting for opponent's map selection...");
                     });
                     return;
-
                 case "map_result":
                     Debug.Log("[ChooseScene] Received final map result.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -230,6 +229,28 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json); // GameSceneController에서 처리
                     });
                     return;
+                case "player_hit":
+                    Debug.Log("[Network] Received player_hit packet from server.");
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        OnMessageReceived?.Invoke(json); // GameSceneController에서 처리
+                    });
+                    return;
+                case "enemy_attack_anim":
+                    Debug.Log("[GameScene] Received enemy attack animation packet.");
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        OnMessageReceived?.Invoke(json); // GameSceneController에서 처리
+                    });
+                    return;
+                case "enemy_die_anim":
+                    Debug.Log("[GameScene] Received enemy_die_anim packet from server.");
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        OnMessageReceived?.Invoke(json); // GameSceneController에서 실제 애니메이션 실행
+                    });
+                    return;
+
                 case "score_update":
                     Debug.Log("[GameScene] Received score update packet.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>

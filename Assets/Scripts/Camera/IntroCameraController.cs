@@ -16,6 +16,7 @@ public class IntroCameraController : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] private GameObject backgroundImage; // 처음에 3초 동안 보여줄 이미지
     [SerializeField] private Image fadeImage;            // 페이드용 이미지 (검은색)
+    [SerializeField] private GameObject gameUI;
 
     [Header("Settings")]
     [SerializeField] private float backgroundDuration = 3f; // 배경 보여주는 시간
@@ -67,7 +68,7 @@ public class IntroCameraController : MonoBehaviour
         // 5. 화면 밝아지기 (페이드 아웃)
         fadeImage.DOFade(0f, fadeDuration);
         yield return new WaitForSeconds(fadeDuration);
-
+        gameUI.SetActive(true);
         fadeImage.gameObject.SetActive(false);
 
         Debug.Log("[IntroCameraController] Intro finished, switched to main camera!");

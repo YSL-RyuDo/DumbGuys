@@ -647,6 +647,7 @@ GameObject:
   - component: {fileID: 732003104}
   - component: {fileID: 732003103}
   - component: {fileID: 732003105}
+  - component: {fileID: 732003106}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -712,6 +713,34 @@ MonoBehaviour:
   enemyNameText: {fileID: 682131361}
   scoreText: {fileID: 1086694129}
   lerpSpeed: 12
+--- !u!114 &732003106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 732003102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d40a01308f167c4db1f8be0cacb34ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nicknameText: {fileID: 0}
+  kdaText: {fileID: 0}
+  hpSlider: {fileID: 0}
+  rankingImage: {fileID: 0}
+  rankingContent: {fileID: 0}
+  playerText: {fileID: 0}
+  enemyText: {fileID: 0}
+  firstRankSprite: {fileID: 0}
+  secondRankSprite: {fileID: 0}
+  itemImage: {fileID: 0}
+  defaultItemSprite: {fileID: 0}
+  chatContent: {fileID: 0}
+  chatInputField: {fileID: 0}
+  chatSendButton: {fileID: 0}
+  chatMessagePrefab: {fileID: 0}
+  chatScrollView: {fileID: 0}
 --- !u!1 &830244723
 GameObject:
   m_ObjectHideFlags: 0
@@ -2393,6 +2422,10 @@ MonoBehaviour:
   motor: {fileID: 4784151567060405872}
   cameraTransform: {fileID: 8213232924483575484}
   animator: {fileID: 953423913}
+  maxHealth: 100
+  attackDamage: 20
+  attackRange: 2
+  attackCooldown: 0.5
 --- !u!224 &4129907877558072472
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2506,7 +2539,7 @@ GameObject:
   - component: {fileID: 4825461233712222987}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

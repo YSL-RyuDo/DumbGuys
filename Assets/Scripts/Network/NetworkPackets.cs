@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 //
 // === 공용 패킷 구조 ===
@@ -236,3 +237,56 @@ public class LeaveRoomPacket
 }
 
 
+[System.Serializable]
+public class AttackRequest
+{
+    public string cmd = "attack";
+    public string attacker;
+    public string target;
+    public int damage;
+}
+
+[System.Serializable]
+public class PlayerHitPacket
+{
+    public string type;
+    public string attacker;
+    public string target;
+    public int damage;
+}
+
+[System.Serializable]
+public class AttackAnimRequest
+{
+    public string cmd = "attack_anim";
+    public string attacker;
+}
+
+[System.Serializable]
+public class EnemyAttackAnimPacket
+{
+    public string type;
+    public string attacker;
+}
+
+[System.Serializable]
+public class DeathAnimRequest
+{
+    public string cmd = "death_anim";  // 서버에서 구분용 키워드
+    public string attacker;            // 죽은 플레이어 닉네임
+}
+
+[System.Serializable]
+public class EnemyDieAnimPacket
+{
+    public string type;      // "enemy_die_anim"
+    public string attacker;  // 죽은 플레이어 닉네임
+}
+
+[System.Serializable]
+public class ChatRequest
+{
+    public string cmd = "chat";
+    public string sender;
+    public string message;
+}
