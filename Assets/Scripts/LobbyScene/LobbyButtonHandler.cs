@@ -36,6 +36,10 @@ public class LobbyButtonHandler : MonoBehaviour
     [SerializeField] private Sprite map1SourceImage;
     [SerializeField] private Sprite map2SourceImage;
 
+    [Header("Logout Button")]
+    [SerializeField] private Button logoutOkButton;
+
+    [SerializeField] public Button tutorialNextButton;
     private bool isMultiMode = true; // 멀티 모드 진입 여부
 
     private void Awake()
@@ -43,31 +47,49 @@ public class LobbyButtonHandler : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+        if (logoutOkButton != null)
+            logoutOkButton.onClick.AddListener(OnLogoutConfirm);
+    }
+
+    private void OnLogoutConfirm()
+    {
+        string nickname = ClientSession.Instance?.Nickname; 
+
+        if (!string.IsNullOrEmpty(nickname))
+        {
+            var logoutReq = new LogoutRequest
+            {
+                cmd = "logout",
+                nickname = nickname
+            };
+
+            NetworkManager.Instance.SendJson(logoutReq);
+            Debug.Log($"[Client] Sent logout packet for {nickname}");
+        }
+
+        ClientSession.Instance.Logout();
+        SceneManager.LoadScene("LoginScene");
+    }
+
     // === PLAY 버튼 ===
     public void OnClickPlay()
     {
         var tutorial = TutorialManager.Instance;
 
-        if (tutorial != null)
+        // === 튜토리얼 중일 때 ===
+        if (tutorial != null && !tutorial.IsTutorialDone)
         {
-            // Case 1: 튜토리얼 중인데 아직 준비 안됨
-            if (tutorial.IsTutorialRunning && tutorial.nextTutorialIndex < 0)
+            // 튜토리얼 단계가 4일 경우 -> 플레이 버튼 클릭으로 완료 처리
+            if (tutorial.GetStage() == 4)
             {
-                Debug.Log("[Lobby] Play button pressed during tutorial (not ready).");
-                tutorial.OnOtherButtonClicked();
-                return;
-            }
-
-            // Case 2: 다음 튜토리얼 씬으로 이동해야 함
-            if (tutorial.nextTutorialIndex >= 0)
-            {
-                string sceneName = $"Tutorial{tutorial.nextTutorialIndex}Scene";
-                Debug.Log($"[Lobby] Play button pressed -> Loading {sceneName}");
-                SceneManager.LoadScene(sceneName);
-                return;
+                Debug.Log("[Lobby] Play button pressed during tutorial -> complete tutorial");
+                tutorial.OnNextTutorial0Step(); // case 5 → MarkTutorialCompleted() 실행
             }
         }
 
+        // === 일반 실행 로직 ===
         if (!string.IsNullOrEmpty(selectedSceneName))
         {
             Debug.Log($"[Lobby] Play button pressed -> Loading selected scene: {selectedSceneName}");
@@ -75,7 +97,6 @@ public class LobbyButtonHandler : MonoBehaviour
             return;
         }
 
-        // Case 3: 멀티 모드면 바로 로딩씬으로
         if (isMultiMode)
         {
             Debug.Log("[Lobby] Play button pressed (Multi Mode) -> LoadingScene");
@@ -84,18 +105,11 @@ public class LobbyButtonHandler : MonoBehaviour
         }
     }
 
+
     // === EXIT 버튼 ===
     public void OnClickExit()
     {
         var tutorial = TutorialManager.Instance;
-
-        // 튜토리얼 중이면 경고
-        if (tutorial != null && tutorial.IsTutorialRunning)
-        {
-            Debug.Log("[Lobby] Exit button pressed during tutorial.");
-            tutorial.OnOtherButtonClicked();
-            return;
-        }
 
         Debug.Log("[Lobby] Exit button clicked");
         Application.Quit();
@@ -104,39 +118,53 @@ public class LobbyButtonHandler : MonoBehaviour
     // === MODE 버튼 ===
     public void OnClickMode()
     {
+        Debug.Log("[Lobby] ModeButton clicked");
+
+        bool newState = !gameModeUI.activeSelf;
+        gameModeUI.SetActive(newState);
+
+        // === 튜토리얼 중이라면 ===
         var tutorial = TutorialManager.Instance;
-
-        if (tutorial != null && !tutorial.IsTutorialCompleted)
+        if (tutorial != null && !tutorial.IsTutorialDone)
         {
-            Debug.Log("[Lobby] ModeButton clicked (Tutorial Active)");
-            tutorial.OnModeButtonClicked_Tutorial();
-            return;
+            // 튜토리얼 1단계 진행 중에 MODE 버튼을 눌렀을 때만 다음 단계로
+            if (tutorial.GetStage() == 1 && newState)
+            {
+                tutorial.OnNextTutorial0Step();
+            }
         }
 
-        Debug.Log("[Lobby] ModeButton clicked (Normal Mode)");
-        if (gameModeUI != null)
-        {
-            bool newState = !gameModeUI.activeSelf;
-            gameModeUI.SetActive(newState);
-            Debug.Log($"[Lobby] GameModeUI {(newState ? "opened" : "closed")} (normal)");
-        }
+        Debug.Log($"[Lobby] GameModeUI {(newState ? "opened" : "closed")}");
     }
 
-    // === SINGLEPLAY 버튼 ===
+
     public void OnClickSinglePlay()
     {
-        var tutorial = TutorialManager.Instance;
-
-        if (tutorial != null && !tutorial.IsTutorialCompleted)
-        {
-            Debug.Log("[Lobby] SinglePlay clicked (Tutorial Active)");
-            tutorial.OnSinglePlayButtonClicked_Tutorial();
-            return;
-        }
-
-        Debug.Log("[Lobby] SinglePlay clicked (Normal Mode)");
+        Debug.Log("[Lobby] SinglePlay clicked");
         isMultiMode = false;
 
+        var tutorial = TutorialManager.Instance;
+
+        // === 튜토리얼 중인 경우 ===
+        if (tutorial != null && !tutorial.IsTutorialDone)
+        {
+            // 튜토리얼 스테이지가 2일 때 다음 단계로 진행
+            if (tutorial.GetStage() == 2)
+            {
+                tutorial.OnNextTutorial0Step();
+
+                // 튜토리얼 진행과 동시에 패널 열기
+                if (tutorialActionPanel != null)
+                {
+                    tutorialActionPanel.SetActive(true);
+                    tutorialActionPanel.transform.SetAsLastSibling();
+                    Debug.Log("[Lobby] TutorialActionPanel opened (Single Mode)");
+                }
+                return;
+            }
+        }
+
+        // === 일반 모드 ===
         if (tutorialActionPanel != null)
         {
             tutorialActionPanel.SetActive(true);
@@ -145,18 +173,10 @@ public class LobbyButtonHandler : MonoBehaviour
         }
     }
 
+
     // === MULTIPLAY 버튼 ===
     public void OnClickMultiPlay()
     {
-        var tutorial = TutorialManager.Instance;
-
-        if (tutorial != null && !tutorial.IsTutorialCompleted)
-        {
-            Debug.Log("[Lobby] MultiPlay clicked (Tutorial Active)");
-            tutorial.OnOtherButtonClicked();
-            return;
-        }
-
         Debug.Log("[Lobby] MultiPlay clicked (Normal Mode)");
         isMultiMode = true;
 
@@ -177,25 +197,21 @@ public class LobbyButtonHandler : MonoBehaviour
 
     public void OnClickTutorial0()
     {
+        Debug.Log("[Lobby] Tutorial0 clicked");
+
         var tutorial = TutorialManager.Instance;
 
-        if (tutorial != null && !tutorial.IsTutorialCompleted)
+        // === 튜토리얼 중이라면 ===
+        if (tutorial != null && !tutorial.IsTutorialDone)
         {
-            Debug.Log("[Lobby] Tutorial0 clicked (Tutorial Active)");
-            HideTutorialMessage();
-            SetGameModeUIActive(false);
-            SetTutorialPanelActive(false);
-            SetModeButtonSprite("Tutorial0");
-
-            // 튜토리얼 완료 및 씬 지정
-            tutorial.nextTutorialIndex = 0;
-            tutorial.MarkTutorialCompleted();
-            selectedSceneName = "Tutorial0Scene";
-            Debug.Log("[Lobby] Tutorial0 selected -> Next Scene: Tutorial0Scene");
-            return;
+            // 튜토리얼 스테이지가 3일 때 -> 다음 단계로 진행
+            if (tutorial.GetStage() == 3)
+            {
+                tutorial.OnNextTutorial0Step(); // → case 4 실행 ("Press PLAY to begin your training!")
+            }
         }
 
-        // 일반 모드
+        // === 일반 모드 ===
         Debug.Log("[Lobby] Tutorial0 clicked (Normal Mode)");
         SetModeButtonSprite("Tutorial0");
         SetGameModeUIActive(false);
@@ -203,6 +219,7 @@ public class LobbyButtonHandler : MonoBehaviour
         UpdateTutorialSelectionUI(tutorial0Button);
         selectedSceneName = "Tutorial0Scene";
     }
+
 
     // === 튜토리얼 / 맵 버튼 ===
     public void OnClickTutorial1()
@@ -273,27 +290,40 @@ public class LobbyButtonHandler : MonoBehaviour
     }
 
     // === 튜토리얼 메시지 ===
-    public void ShowTutorialMessage(string message)
+    public void ShowTutorialMessage(string message, bool allowNext = false)
     {
+        if (tutorialMessagePanel == null || tutorialText == null) return;
+
         tutorialMessagePanel.SetActive(true);
         tutorialText.text = message;
 
-        // 기존 코루틴이 돌고 있다면 중복 방지
-        StopAllCoroutines();
-        StartCoroutine(HideTutorialMessageAfterDelay(3f));
-    }
+        if (tutorialNextButton == null) return;
 
-    private IEnumerator HideTutorialMessageAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        tutorialMessagePanel.SetActive(false);
-        Debug.Log("[Lobby] Tutorial message auto-hidden after delay");
+        tutorialNextButton.onClick.RemoveAllListeners();
+
+        if (allowNext)
+        {
+            // “Next” 버튼은 메시지만 닫음 (튜토리얼 진행 X)
+            tutorialNextButton.gameObject.SetActive(true);
+            tutorialNextButton.onClick.AddListener(() =>
+            {
+                Debug.Log("[Lobby] Tutorial Next clicked → close only");
+                HideTutorialMessage();
+            });
+        }
+        else
+        {
+            tutorialNextButton.gameObject.SetActive(false);
+        }
     }
 
     public void HideTutorialMessage()
     {
         tutorialMessagePanel.SetActive(false);
+        if (tutorialNextButton != null)
+            tutorialNextButton.gameObject.SetActive(false);
     }
+
 
     // === 버튼 상호작용 제어 ===
     public void SetAllButtonsInteractable(bool state)
@@ -357,4 +387,52 @@ public class LobbyButtonHandler : MonoBehaviour
         }
         Canvas.ForceUpdateCanvases();
     }
+
+    // === 반복 강조 ===
+    public void HighlightButtonLoop(string buttonName)
+    {
+        Button btn = null;
+        switch (buttonName)
+        {
+            case "Mode": btn = modeButton; break;
+            case "Single": btn = singlePlayButton; break;
+            case "Multi": btn = multiPlayButton; break;
+            case "Tutorial0": btn = tutorial0Button; break;
+        }
+
+        if (btn == null) return;
+
+        var tr = btn.transform;
+        tr.DOKill();
+        tr.DOScale(1.2f, 0.4f)
+          .SetLoops(-1, LoopType.Yoyo) // 무한 반복
+          .SetEase(Ease.OutBack);
+    }
+
+    // === 특정 버튼 강조 중지 ===
+    public void StopHighlightButton(string buttonName)
+    {
+        Button btn = null;
+        switch (buttonName)
+        {
+            case "Mode": btn = modeButton; break;
+            case "Single": btn = singlePlayButton; break;
+            case "Multi": btn = multiPlayButton; break;
+            case "Tutorial0": btn = tutorial0Button; break;
+        }
+
+        if (btn == null) return;
+        btn.transform.DOKill();
+        btn.transform.localScale = Vector3.one;
+    }
+
+    // === 전체 강조 중지 ===
+    public void StopAllHighlights()
+    {
+        StopHighlightButton("Mode");
+        StopHighlightButton("Single");
+        StopHighlightButton("Multi");
+        StopHighlightButton("Tutorial0");
+    }
+
 }

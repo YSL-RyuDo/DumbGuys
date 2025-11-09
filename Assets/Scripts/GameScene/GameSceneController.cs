@@ -17,7 +17,6 @@ public class GameSceneController : MonoBehaviour
     [SerializeField] private TMPro.TextMeshProUGUI playerNameText;
     [SerializeField] private TMPro.TextMeshProUGUI enemyNameText;
     [SerializeField] private TMPro.TextMeshProUGUI scoreText;
-    private bool isInputLocked = false;
 
     private bool spawnApplied = false;
     private string enemyNickname = "";
@@ -95,11 +94,13 @@ public class GameSceneController : MonoBehaviour
             var data = JsonUtility.FromJson<AppearanceResponse>(json);
 
             if (data.nickname == ClientSession.Instance.Nickname)
+            {
                 playerAppearance.ApplyAppearance(data);
+            }
             else if (data.nickname == enemyNickname)
+            {
                 enemyAppearance.ApplyAppearance(data);
-
-            var player = FindFirstObjectByType<PlayerCharacter>();
+            }
             //player.SetInputLocked(false);
 
         }
@@ -227,8 +228,11 @@ public class GameSceneController : MonoBehaviour
                 scorePanel.SetActive(true);
 
             var player = FindFirstObjectByType<PlayerCharacter>();
-            //if (player != null)
-            //    player.SetInputLocked(true);
+            if (player != null)
+            {
+                player.SetInputLocked(true);
+                Debug.Log("[GameScene] Player input locked due to score screen.");
+            }
 
             Debug.Log($"[GameScene] Score Updated → {playerScore}:{enemyScore}");
         }
@@ -269,14 +273,14 @@ public class GameSceneController : MonoBehaviour
             playerSpawnPos = "B";
         }
 
-        // 위치 배치
+        // === 위치 배치 ===
         playerAppearance.transform.position = playerSpawn.position;
         enemyAppearance.transform.position = enemySpawn.position;
 
         playerAppearance.transform.LookAt(enemyAppearance.transform);
         enemyAppearance.transform.LookAt(playerAppearance.transform);
 
-        // 태그와 이름 지정
+        // === 태그 및 이름 지정 ===
         string myNickname = data.playerNickname;
         string enemyNick = data.enemyNickname;
 
@@ -288,6 +292,16 @@ public class GameSceneController : MonoBehaviour
 
         Debug.Log($"[GameScene] Tag/Name Assigned → Player: {playerAppearance.name} (Tag={playerAppearance.tag}), Enemy: {enemyAppearance.name} (Tag={enemyAppearance.tag})");
 
+        // === UI 적용 ===
+        var ui = FindFirstObjectByType<GameUIManager>();
+        if (ui != null)
+        {
+            ui.SetPlayerName(myNickname);
+            ui.SetEnemyName(enemyNick);
+            Debug.Log($"[UI] Player: {myNickname}, Enemy: {enemyNick} 이름 적용 완료");
+        }
+
+        // === 외형 요청 ===
         StartCoroutine(RequestAppearancesDelayed(enemyNick));
     }
 

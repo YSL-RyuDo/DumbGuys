@@ -65,13 +65,23 @@ public class TutorialInfoRequest
 }
 
 
-[Serializable]
+[System.Serializable]
 public class TutorialInfoResponse
 {
-    public string type = "tutorial_info";  // 서버에서 식별용
+    public string type;
     public string nickname;
-    public bool tutorialDone;              // 튜토리얼 완료 여부
+    public bool tutorialDone;
+    public int tutorialStage;
 }
+
+[System.Serializable]
+public class TutorialProgressRequest
+{
+    public string cmd;            // "set_tutorial_stage"
+    public string nickname;       // 플레이어 닉네임
+    public int tutorialStage;     // 현재 완료된 튜토리얼 스테이지 (예: 0 -> 1)
+}
+
 
 [System.Serializable]
 public class TutorialCompleteRequest
@@ -289,4 +299,36 @@ public class ChatRequest
     public string cmd = "chat";
     public string sender;
     public string message;
+}
+
+[System.Serializable]
+public class ChatMessagePacket
+{
+    public string type;
+    public string sender;
+    public string message;
+}
+
+
+[System.Serializable]
+public class PushRequest
+{
+    public string cmd;      // "push"
+    public string attacker;
+    public string target;
+}
+
+[System.Serializable]
+public class PushHitPacket
+{
+    public string type;
+    public string attacker;
+    public string target;
+}
+
+[System.Serializable]
+public class LogoutRequest
+{
+    public string cmd;
+    public string nickname;
 }

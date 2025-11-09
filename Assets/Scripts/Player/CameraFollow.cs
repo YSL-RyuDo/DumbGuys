@@ -34,6 +34,9 @@ public class CameraFollow : MonoBehaviour
     {
         if (!target) return;
 
+        if (GameUIManager.IsChatting) return;
+
+
         // 마우스로만 카메라 회전
         yaw += Input.GetAxis("Mouse X") * sensitivity;
         pitch -= Input.GetAxis("Mouse Y") * sensitivity;

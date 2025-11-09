@@ -39,7 +39,11 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
-        Connect("127.0.0.1", 7777);
+        // 랜서버
+        Connect("127.0.0.1", 9000);
+        
+        // 포트포워딩
+        //Connect("211.247.47.240", 9000);
     }
 
     public void Connect(string ip, int port)
@@ -164,6 +168,7 @@ public class NetworkManager : MonoBehaviour
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
                         OnMessageReceived?.Invoke(json); // LoadingSceneController가 받음
+
                     });
                     return;
 
@@ -250,6 +255,52 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json); // GameSceneController에서 실제 애니메이션 실행
                     });
                     return;
+
+                case "push_hit":
+                    var data = JsonUtility.FromJson<PushHitPacket>(json);
+                    Debug.Log($"[GameScene] Received push_hit → {data.attacker} pushed {data.target}");
+
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        var myName = ClientSession.Instance.Nickname;
+                        if (data.target == myName)
+                        {
+                            var player = FindFirstObjectByType<PlayerCharacter>();
+                            var attacker = GameObject.Find(data.attacker);
+                            if (player != null && attacker != null)
+                            {
+                                Vector3 dir = (player.transform.position - attacker.transform.position).normalized;
+                                player.ApplyPushKnockback(dir, 10f);
+                            }
+                        }
+                    });
+                    return;
+
+                case "chat_message":
+                    try
+                    {
+                        var chat = JsonUtility.FromJson<ChatMessagePacket>(json);
+                        Debug.Log($"[Chat] Received chat from {chat.sender}: {chat.message}");
+
+                        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                        {
+                            var ui = FindFirstObjectByType<GameUIManager>();
+                            if (ui != null)
+                            {
+                                ui.AddChatMessage(chat.sender, chat.message);
+                            }
+
+                            var lobbyUI = FindFirstObjectByType<LobbyUI>();
+                            if (lobbyUI != null) lobbyUI.AddChatMessage(chat.sender, chat.message);
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogWarning($"[Chat] Failed to parse chat_message packet: {e.Message}");
+                    }
+                    return;
+
+
 
                 case "score_update":
                     Debug.Log("[GameScene] Received score update packet.");

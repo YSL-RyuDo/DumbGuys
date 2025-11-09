@@ -30,10 +30,10 @@ EditorBuildSettings:
     path: Assets/Scenes/ResultScene.unity
     guid: 96f0d733ea02a2049b6db2fa62e4b2fb
   - enabled: 1
-    path: Assets/Scenes/Tutorial0Scene.unity
+    path: Assets/Scenes/fuking.unity
     guid: 956bd4a6c659b384daeb9f7010009ddc
   - enabled: 1
-    path: Assets/Scenes/Tutorial1Scene.unity
+    path: Assets/Scenes/Tutorial0Scene.unity
     guid: 4b7127bc153f33147a2726eaa3ac91b1
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

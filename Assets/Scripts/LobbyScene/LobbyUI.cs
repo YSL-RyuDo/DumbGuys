@@ -25,6 +25,29 @@ public class LobbyUI : MonoBehaviour
     [SerializeField] private Sprite[] IconSprites;
     [SerializeField] private Sprite[] IconBorderSprites;
 
+    [Header("Chat System")]
+    [SerializeField] private Transform chatContent;
+    [SerializeField] private TMP_InputField chatInputField;
+    [SerializeField] private Button chatSendButton;
+    [SerializeField] private GameObject chatMessagePrefab;
+    [SerializeField] private ScrollRect chatScrollView;
+
+    private void Start()
+    {
+        // 버튼 클릭 시 서버로 메시지 전송
+        chatSendButton.onClick.AddListener(SendChatMessage);
+
+        // 서버 수신 등록
+        if (NetworkManager.Instance != null)
+            NetworkManager.Instance.OnMessageReceived += HandleServerMessage;
+    }
+
+    private void OnDestroy()
+    {
+        if (NetworkManager.Instance != null)
+            NetworkManager.Instance.OnMessageReceived -= HandleServerMessage;
+    }
+
     public void ApplyPlayerInfo(PlayerInfoResponse info)
     {
         // === Text ===
@@ -62,6 +85,47 @@ public class LobbyUI : MonoBehaviour
         if (info.iconBorder >= 0 && info.iconBorder < IconBorderSprites.Length)
             IconBorderImage.sprite = IconBorderSprites[info.iconBorder];
 
-        Debug.Log($"[UI] Updated player info: {info.nickname}, Lv.{info.level}, Rank:{info.rank}");
+        Debug.Log($"[LobbyUI] Updated player info: {info.nickname}, Lv.{info.level}, Rank:{info.rank}");
+    }
+
+    private void SendChatMessage()
+    {
+        string msg = chatInputField.text.Trim();
+        if (string.IsNullOrEmpty(msg)) return;
+
+        // 로컬에 바로 표시
+        AddChatMessage(ClientSession.Instance.Nickname, msg);
+
+        // 서버 전송
+        var chatReq = new ChatRequest
+        {
+            sender = ClientSession.Instance.Nickname,
+            message = msg
+        };
+        NetworkManager.Instance.SendJson(chatReq);
+
+        chatInputField.text = "";
+    }
+
+    private void HandleServerMessage(string json)
+    {
+        if (json.Contains("\"type\":\"chat_message\""))
+        {
+            var data = JsonUtility.FromJson<ChatMessagePacket>(json);
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                AddChatMessage(data.sender, data.message);
+            });
+        }
+    }
+
+    public void AddChatMessage(string sender, string message)
+    {
+        GameObject newMsg = Instantiate(chatMessagePrefab, chatContent);
+        TMP_Text msgText = newMsg.GetComponentInChildren<TMP_Text>();
+        msgText.text = $"[{sender}] {message}";
+
+        Canvas.ForceUpdateCanvases();
+        chatScrollView.verticalNormalizedPosition = 0;
     }
 }

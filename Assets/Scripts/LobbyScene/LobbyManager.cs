@@ -64,24 +64,26 @@ public class LobbyManager : MonoBehaviour
         else if (json.Contains("\"type\":\"tutorial_info\""))
         {
             var res = JsonUtility.FromJson<TutorialInfoResponse>(json);
-            Debug.Log($"[Client] Tutorial info received. tutorialDone = {res.tutorialDone}");
+            Debug.Log($"[Client] Tutorial info received → Done={res.tutorialDone}, Stage={res.tutorialStage}");
 
-            if (res.tutorialDone)
+            var tutorial = TutorialManager.Instance;
+
+            if (tutorial != null)
             {
-                // 이미 튜토리얼 완료한 상태로 설정
-                if (TutorialManager.Instance != null)
+                if (res.tutorialDone)
                 {
-                    TutorialManager.Instance.MarkTutorialCompleted();
+                    // 튜토리얼 완료 상태
+                    tutorial.MarkTutorialCompleted();
                     Debug.Log("[Client] Tutorial already completed. Skipping tutorial.");
                 }
-                return;
+                else
+                {
+                    // 아직 완료되지 않은 경우 단계 복원 후 시작
+                    tutorial.SetStage(res.tutorialStage);
+                    tutorial.StartTutorial();
+                    Debug.Log($"[Client] Tutorial resumed at stage {res.tutorialStage}");
+                }
             }
-
-            // 아직 완료하지 않았다면 튜토리얼 시작
-            if (TutorialManager.Instance != null)
-                TutorialManager.Instance.StartTutorial();
         }
-
-
     }
 }

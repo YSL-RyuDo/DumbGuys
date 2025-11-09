@@ -15,6 +15,10 @@ public class PlayerCharacter : MonoBehaviour
     [SerializeField] private float attackRange = 2f;
     [SerializeField] private float attackCooldown = 0.5f;
 
+    [Header("push item")]
+    [SerializeField] private float pushRange = 3f;
+    [SerializeField] private float pushAngleDot = 0.6f;
+
     private float lastAttackTime;
     private int currentHealth;
     private bool isDead = false;
@@ -33,6 +37,8 @@ public class PlayerCharacter : MonoBehaviour
     public int CurrentHealth => currentHealth;
     public int MaxHealth => maxHealth;
 
+    private bool isInputLocked = true;
+    public bool IsInputLocked => isInputLocked;
 
     void Awake()
     {
@@ -45,26 +51,25 @@ public class PlayerCharacter : MonoBehaviour
 
     void Update()
     {
-        if (isDead) return;
+        bool isChatting = GameUIManagerExistsAndChatting();
+        bool isTutorial = Tutorial0Manager.Instance != null;
 
-        //if (inputLocked)
-        //{
-        //    animator.SetFloat("Hor", 0);
-        //    animator.SetFloat("Vert", 0);
-        //    //return;
-        //}
-
-        currentState?.HandleInput();
-        currentState?.Update();
-
-        UpdateAnimator();
-
-        if (Input.GetMouseButtonDown(0))
+        if ((isChatting && !isTutorial) || isInputLocked)
         {
-            TryAttack();
+            animator.SetFloat("Hor", 0);
+            animator.SetFloat("Vert", 0);
+            motor.Move(Vector3.zero);
+        }
+        else
+        {
+            currentState?.HandleInput();
+            currentState?.Update();
+            UpdateAnimator();
+
+            if (Input.GetMouseButtonDown(0))
+                TryAttack();
         }
 
-        // === 매 순간 (주기적으로) 패킷 전송 ===
         sendTimer += Time.deltaTime;
         if (sendTimer >= sendInterval)
         {
@@ -72,6 +77,18 @@ public class PlayerCharacter : MonoBehaviour
             SendMovePacket();
         }
     }
+
+
+    private bool GameUIManagerExistsAndChatting()
+    {
+        var obj = FindFirstObjectByType<GameUIManager>();
+        if (obj == null)
+            return false;
+
+        // GameUIManager.IsChatting이 static이라면 그냥 바로 반환 가능
+        return GameUIManager.IsChatting;
+    }
+
 
     private void TryAttack()
     {
@@ -123,42 +140,36 @@ public class PlayerCharacter : MonoBehaviour
 
         foreach (var hit in hits)
         {
-            Debug.Log($"[Attack] Checking collider: {hit.name} (tag={hit.tag})");
+            Vector3 toTarget = (hit.transform.position - transform.position).normalized;
+            float dot = Vector3.Dot(transform.forward, toTarget);
+            if (dot < 0.5f)
+                continue;
 
-            // 태그가 "Enemy"인 대상만 공격
+            var enemy = hit.GetComponentInParent<EnemyHealth>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(attackDamage);
+                Debug.Log($"[TutorialAttack] {hit.name} took {attackDamage} damage!");
+                continue; // 튜토리얼 적이면 여기서 끝
+            }
             if (hit.CompareTag("Enemy"))
             {
-                Vector3 toTarget = (hit.transform.position - transform.position).normalized;
-                float dot = Vector3.Dot(transform.forward, toTarget);
-
-                // 정면 60도 이내만 공격
-                if (dot > 0.5f)
+                var nickname = ClientSession.Instance.Nickname;
+                var attackReq = new AttackRequest
                 {
-                    // 클라이언트는 피격 판정하지 않고 서버에 패킷만 보냄
-                    var nickname = ClientSession.Instance.Nickname;
-                    var attackReq = new AttackRequest
-                    {
-                        attacker = nickname,
-                        target = hit.name,   // Enemy의 이름은 닉네임으로 설정되어 있음
-                        damage = attackDamage
-                    };
+                    attacker = nickname,
+                    target = hit.name,
+                    damage = attackDamage
+                };
 
-                    Debug.Log($"[Network] Sending attack packet → {attackReq.attacker} -> {attackReq.target}, dmg={attackReq.damage}");
-                    NetworkManager.Instance.SendJson(attackReq);
-                }
-                else
-                {
-                    Debug.Log($"[Attack] {hit.name} ignored (not in forward arc, dot={dot:F2})");
-                }
-            }
-            else
-            {
-                Debug.Log($"[Attack] Ignored collider: {hit.name} (tag={hit.tag})");
+                Debug.Log($"[Network] Sending attack packet → {attackReq.attacker} -> {attackReq.target}, dmg={attackReq.damage}");
+                NetworkManager.Instance.SendJson(attackReq);
             }
         }
 
         Debug.Log($"[Attack] {name} finished PerformAttack()");
     }
+
 
     public void TakeDamage(int damage)
     {
@@ -172,6 +183,11 @@ public class PlayerCharacter : MonoBehaviour
 
         currentHealth -= damage;
         Debug.Log($"[Damage] {name} HP after hit = {currentHealth}");
+
+        var tutorial = Tutorial0Manager.Instance;
+        if (tutorial != null)
+            tutorial.UpdateTutorialHP(this);
+
 
         if (currentHealth <= 0)
         {
@@ -282,14 +298,163 @@ public class PlayerCharacter : MonoBehaviour
         NetworkManager.Instance.SendJson(packet);
     }
 
-    //public void SetInputLocked(bool locked)
-    //{
-    //    inputLocked = locked;
-    //    if (locked)
-    //    {
-    //        motor.Move(Vector3.zero);
-    //        animator.SetFloat("Hor", 0);
-    //        animator.SetFloat("Vert", 0);
-    //    }
-    //}
+    public void OnItemPicked(ItemPickup.ItemType itemType)
+    {
+        Debug.Log($"[Item] Picked up: {itemType}");
+
+        // UI 매니저에 전달만 (즉시 적용 X)
+        var ui = FindFirstObjectByType<GameUIManager>();
+        if (ui != null)
+            ui.OnItemPicked(itemType);
+    }
+
+    public void UseItem(ItemPickup.ItemType itemType)
+    {
+        Debug.Log($"[Item] Using item: {itemType}");
+
+        switch (itemType)
+        {
+            case ItemPickup.ItemType.SpeedUp:
+                StartCoroutine(ApplySpeedBoost());
+                break;
+
+            case ItemPickup.ItemType.AttackUp:
+                StartCoroutine(ApplyAttackBoost());
+                break;
+
+            case ItemPickup.ItemType.Heal:
+                Heal(30);
+                break;
+
+            case ItemPickup.ItemType.Push:
+                TryPushItem();
+                break;
+
+            case ItemPickup.ItemType.JumpUp:
+                StartCoroutine(ApplyJumpBoost());
+                break;
+        }
+    }
+
+
+    private IEnumerator ApplySpeedBoost()
+    {
+        Debug.Log("[Item] Speed Up activated!");
+        motor.SetSpeedMultiplier(1.5f);
+        yield return new WaitForSeconds(5f);
+        motor.SetSpeedMultiplier(1f);
+        Debug.Log("[Item] Speed Up ended.");
+    }
+
+    private IEnumerator ApplyAttackBoost()
+    {
+        Debug.Log("[Item] Attack Up activated!");
+        attackDamage += 10;
+        yield return new WaitForSeconds(5f);
+        attackDamage -= 10;
+        Debug.Log("[Item] Attack Up ended.");
+    }
+
+    private void Heal(int amount)
+    {
+        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+        Debug.Log($"[Item] Healed! HP = {currentHealth}/{maxHealth}");
+
+        var tutorial = Tutorial0Manager.Instance;
+        if (tutorial != null)
+            tutorial.UpdateTutorialHP(this);
+    }
+
+    private void TryPushItem()
+    {
+        Debug.Log("[Item] Push use requested.");
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, pushRange);
+        Debug.Log($"[Item] Push detected {hits.Length} targets.");
+
+        bool isTutorial = FindFirstObjectByType<Tutorial0Manager>() != null;
+        bool hitSomething = false;
+
+        foreach (var hit in hits)
+        {
+            if (!hit.CompareTag("Enemy"))
+                continue;
+
+            // 튜토리얼 모드 → 모든 적에게 넉백
+            if (isTutorial)
+            {
+                var enemyHealth = hit.GetComponentInParent<EnemyHealth>();
+                var enemyRb = hit.GetComponentInParent<Rigidbody>();
+
+                if (enemyHealth != null && enemyRb != null)
+                {
+                    Vector3 knockDir = (hit.transform.position - transform.position).normalized;
+                    knockDir.y = 0f;
+
+                    enemyRb.AddForce(knockDir * 10f, ForceMode.Impulse);
+                    Debug.Log($"[TutorialPush] Knockback applied to {hit.name}");
+                    hitSomething = true;
+                }
+            }
+            else
+            {
+                // 일반 모드 → 각도/정면 판정 + 서버 전송
+                Vector3 toTarget = (hit.transform.position - transform.position).normalized;
+                float dot = Vector3.Dot(transform.forward, toTarget);
+                if (dot < pushAngleDot) continue;
+
+                var req = new PushRequest
+                {
+                    cmd = "push",
+                    attacker = ClientSession.Instance.Nickname,
+                    target = hit.name
+                };
+
+                NetworkManager.Instance.SendJson(req);
+                Debug.Log($"[Network] Sending push request → {req.attacker} -> {req.target}");
+                hitSomething = true;
+            }
+        }
+
+        if (!hitSomething)
+            Debug.Log("[Item] Push no valid target.");
+    }
+
+
+    public void ApplyPushKnockback(Vector3 dir, float force)
+    {
+        if (isDead) return;
+
+        var rb = GetComponent<Rigidbody>();
+        if (rb == null) return;
+
+        dir.y = 0f;
+        dir.Normalize();
+
+        rb.AddForce(dir * force, ForceMode.Impulse);
+        Debug.Log($"[Push] Knockback applied. dir={dir}, force={force}");
+    }
+
+
+    private IEnumerator ApplyJumpBoost()
+    {
+        Debug.Log("[Item] Jump Up activated!");
+        motor.SetJumpMultiplier(1.5f);
+        yield return new WaitForSeconds(5f);
+        motor.SetJumpMultiplier(1f);
+        Debug.Log("[Item] Jump Up ended.");
+    }
+
+    public void SetInputLocked(bool locked)
+    {
+        isInputLocked = locked;
+
+        // 즉시 멈추게 하려면 속도도 0으로
+        if (locked)
+        {
+            motor.Move(Vector3.zero);
+            animator.SetFloat("Hor", 0);
+            animator.SetFloat("Vert", 0);
+        }
+    }
 }

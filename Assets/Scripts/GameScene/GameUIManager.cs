@@ -32,10 +32,19 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] private GameObject chatMessagePrefab; // (Text 하나만 있는 프리팹)
     [SerializeField] private ScrollRect chatScrollView;
 
+    [Header("===== Item Icons =====")]
+    [SerializeField] private Sprite speedUpIcon;
+    [SerializeField] private Sprite attackUpIcon;
+    [SerializeField] private Sprite healIcon;
+    [SerializeField] private Sprite pushIcon;
+    [SerializeField] private Sprite jumpUpIcon;
+
     private bool isChatting = false;
+    public static bool IsChatting { get; private set; } = false;
     private PlayerCharacter player;
     private CharacterAppearance enemy;
     private Transform winZone;
+    private ItemPickup.ItemType? currentHeldItem = null;
 
     void Start()
     {
@@ -64,6 +73,11 @@ public class GameUIManager : MonoBehaviour
         UpdateHP();
         UpdateRanking();
         HandleChatToggle();
+
+        if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
+        {
+            HandleItemUse(player);
+        }
     }
 
     // =========================
@@ -161,6 +175,7 @@ public class GameUIManager : MonoBehaviour
     private void OpenChat()
     {
         isChatting = true;
+        IsChatting = true; // 전역 상태 반영
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         chatInputField.gameObject.SetActive(true);
@@ -171,10 +186,12 @@ public class GameUIManager : MonoBehaviour
     private void CloseChat()
     {
         isChatting = false;
+        IsChatting = false; // 전역 상태 반영
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         chatInputField.DeactivateInputField();
     }
+
 
     private void SendChatMessage()
     {
@@ -203,4 +220,60 @@ public class GameUIManager : MonoBehaviour
         Canvas.ForceUpdateCanvases();
         chatScrollView.verticalNormalizedPosition = 0;
     }
+
+    // 아이템
+
+    public void OnItemPicked(ItemPickup.ItemType itemType)
+    {
+        if (currentHeldItem != null)
+        {
+            Debug.Log($"[UI] Already holding an item ({currentHeldItem}), ignoring new pickup.");
+            return; // 이미 아이템이 있으면 무시
+        }
+
+        currentHeldItem = itemType;
+        hasItem = true;
+        Debug.Log($"[UI] Item picked: {itemType}");
+
+        // 아이템 이미지 표시
+        Sprite itemSprite = GetItemSprite(itemType);
+        itemImage.sprite = itemSprite != null ? itemSprite : defaultItemSprite;
+    }
+
+    public void HandleItemUse(PlayerCharacter player)
+    {
+        if (currentHeldItem == null) return;
+
+        Debug.Log($"[UI] Using item: {currentHeldItem}");
+        player.UseItem(currentHeldItem.Value);
+
+        // 사용 후 초기화
+        ClearItem();
+        currentHeldItem = null;
+    }
+
+    public Sprite GetItemSprite(ItemPickup.ItemType type)
+    {
+        switch (type)
+        {
+            case ItemPickup.ItemType.SpeedUp: return speedUpIcon;
+            case ItemPickup.ItemType.AttackUp: return attackUpIcon;
+            case ItemPickup.ItemType.Heal: return healIcon;
+            case ItemPickup.ItemType.Push: return pushIcon;
+            case ItemPickup.ItemType.JumpUp: return jumpUpIcon;
+            default: return defaultItemSprite;
+        }
+    }
+
+    public void SetPlayerName(string nickname)
+    {
+        playerText.text = nickname;
+        nicknameText.text = nickname;
+    }
+
+    public void SetEnemyName(string nickname)
+    {
+        enemyText.text = nickname;
+    }
+
 }

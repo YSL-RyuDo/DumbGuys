@@ -71,6 +71,20 @@ public class IntroCameraController : MonoBehaviour
         gameUI.SetActive(true);
         fadeImage.gameObject.SetActive(false);
 
+        var player = FindFirstObjectByType<PlayerCharacter>();
+        if (player != null)
+        {
+            player.SetInputLocked(false);
+            Debug.Log("[IntroCameraController] Player control unlocked.");
+        }
+
+        var tutorial = FindFirstObjectByType<Tutorial0Manager>();
+        if (tutorial != null)
+        {
+            Debug.Log("[IntroCameraController] Intro finished -> Starting Tutorial0 intro hint.");
+            tutorial.BeginFirstHintSequence();
+        }
+
         Debug.Log("[IntroCameraController] Intro finished, switched to main camera!");
     }
 }
