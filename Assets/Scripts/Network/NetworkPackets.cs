@@ -301,7 +301,6 @@ public class ChatRequest
     public string message;
 }
 
-<<<<<<< Updated upstream
 [System.Serializable]
 public class ChatMessagePacket
 {
@@ -333,7 +332,6 @@ public class LogoutRequest
     public string cmd;
     public string nickname;
 }
-=======
 public class CoinInfoRequest
 {
     public string cmd = "get_coin_info";
@@ -413,4 +411,3 @@ public class BuyItemResult
     public int coin1;
     public string msg;
 }
->>>>>>> Stashed changes
