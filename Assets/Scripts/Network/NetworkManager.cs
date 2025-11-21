@@ -334,36 +334,6 @@ public class NetworkManager : MonoBehaviour
                     });
                     return;
 
-                case "coin_info":
-                    Debug.Log("[StoreScene] Received coin_info packet.");
-                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                    {
-                        OnMessageReceived?.Invoke(json);
-                    });
-                    return;
-                case "store_items":
-                    Debug.Log("[Store] Received store items packet.");
-                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                    {
-                        OnMessageReceived?.Invoke(json);
-                    });
-                    return;
-                case "owned_items":
-                    Debug.Log("[Store] Received owned_items packet.");
-                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                    {
-                        OnMessageReceived?.Invoke(json);
-                    });
-                    return;
-                case "buy_item_result":
-                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                    {
-                        OnMessageReceived?.Invoke(json);
-                    });
-                    return;
-
-
-
                 case "error":
                     message = $"Error: {res.msg}";
                     break;

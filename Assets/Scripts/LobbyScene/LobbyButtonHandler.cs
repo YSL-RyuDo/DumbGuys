@@ -28,8 +28,6 @@ public class LobbyButtonHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI tutorialText;
     [SerializeField] private Image modeButtonIcon;
 
-    [SerializeField] private Button StoreButton;
-
     [Header("Sprites")]
     [SerializeField] private Sprite MultiSourceImage;
     [SerializeField] private Sprite tutorial0SourceImage;
@@ -116,35 +114,6 @@ public class LobbyButtonHandler : MonoBehaviour
         Debug.Log("[Lobby] Exit button clicked");
         Application.Quit();
     }
-
-    public void OnClickStore()
-    {
-        var tutorial = TutorialManager.Instance;
-
-        // 튜토리얼 중일 때는 다른 버튼처럼 튜토리얼 매니저로 전달
-        if (tutorial != null && !tutorial.IsTutorialCompleted)
-        {
-            Debug.Log("[Lobby] StoreButton clicked (Tutorial Active)");
-            tutorial.OnOtherButtonClicked();
-            return;
-        }
-
-        Debug.Log("[Lobby] StoreButton clicked (Normal Mode)");
-
-        // 기존 SelectScene 구조와 동일하게 처리
-        selectedSceneName = "StoreScene";
-
-        // UI 패널 닫기 (다른 버튼들과 동일한 흐름)
-        if (gameModeUI != null)
-            gameModeUI.SetActive(false);
-
-        if (tutorialActionPanel != null)
-            tutorialActionPanel.SetActive(true);
-
-        // 바로 이동
-        SceneManager.LoadScene("StoreScene");
-    }
-
 
     // === MODE 버튼 ===
     public void OnClickMode()
