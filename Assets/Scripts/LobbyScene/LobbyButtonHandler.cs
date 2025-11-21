@@ -122,10 +122,10 @@ public class LobbyButtonHandler : MonoBehaviour
         var tutorial = TutorialManager.Instance;
 
         // 튜토리얼 중일 때는 다른 버튼처럼 튜토리얼 매니저로 전달
-        if (tutorial != null && !tutorial.IsTutorialCompleted)
+        if (tutorial != null && !tutorial.IsTutorialDone)
         {
             Debug.Log("[Lobby] StoreButton clicked (Tutorial Active)");
-            tutorial.OnOtherButtonClicked();
+            //tutorial.OnOtherButtonClicked();
             return;
         }
 

@@ -10643,6 +10643,7 @@ MonoBehaviour:
   modesButton: {fileID: 407882776}
   tutorialText: {fileID: 144816790}
   modeButtonIcon: {fileID: 917470047}
+  StoreButton: {fileID: 2106937540}
   MultiSourceImage: {fileID: 21300000, guid: 6d7d99d0a59040e498abad5082ade3b0, type: 3}
   tutorial0SourceImage: {fileID: 21300000, guid: d7e066fdaeb14ce4daccb2755b67023e, type: 3}
   tutorial1SourceImage: {fileID: 21300000, guid: ff9a1546be18b5b4da73259fa85daec3, type: 3}
@@ -11533,7 +11534,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2106937541}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1942423289}
+        m_TargetAssemblyTypeName: LobbyButtonHandler, Assembly-CSharp
+        m_MethodName: OnClickStore
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2106937541
 MonoBehaviour:
   m_ObjectHideFlags: 0

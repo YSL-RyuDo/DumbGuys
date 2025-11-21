@@ -22,19 +22,19 @@ EditorBuildSettings:
     guid: 2daa136466044584eaaa835765df01eb
   - enabled: 1
     path: Assets/Scenes/Map1Scene.unity
-    guid: 7d8eb584e0f7ce944b6a320cd26ebe11
+    guid: 5955f7e3a11f2d64d854a4b0634e8406
   - enabled: 1
     path: Assets/Scenes/Map2Scene.unity
-    guid: 0d9be6c8ef1d89844979bffc98148766
+    guid: f1c15e727e576c04c8f205158155cc60
   - enabled: 1
     path: Assets/Scenes/ResultScene.unity
     guid: 96f0d733ea02a2049b6db2fa62e4b2fb
   - enabled: 1
-    path: Assets/Scenes/fuking.unity
+    path: Assets/Scenes/Tutorial0Scene.unity
     guid: 956bd4a6c659b384daeb9f7010009ddc
   - enabled: 1
     path: Assets/Scenes/Tutorial0Scene.unity
-    guid: 4b7127bc153f33147a2726eaa3ac91b1
+    guid: 956bd4a6c659b384daeb9f7010009ddc
   - enabled: 1
     path: Assets/Scenes/StoreScene.unity
     guid: 26e806d25e25b284f89877b7fc3efdb4
