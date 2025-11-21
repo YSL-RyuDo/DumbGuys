@@ -878,11 +878,14 @@ MonoBehaviour:
   chatSendButton: {fileID: 6288509384300446862}
   chatMessagePrefab: {fileID: 209475151982890499, guid: a1c45fd42e355ed4eb9b14110681e058, type: 3}
   chatScrollView: {fileID: 233445700941464564}
+<<<<<<< Updated upstream
   speedUpIcon: {fileID: 21300000, guid: 3d217a7a40b649c4b9efabdc9ea80bc3, type: 3}
   attackUpIcon: {fileID: 21300000, guid: 6827b5b8fc623f943bb3458a5439b3b4, type: 3}
   healIcon: {fileID: 21300000, guid: cf44cf716a9ecf04a8d268021ff693e3, type: 3}
   pushIcon: {fileID: 21300000, guid: a67593b90fd0dc54fae4444782fab880, type: 3}
   jumpUpIcon: {fileID: 21300000, guid: 950257057dd22ed41a58cea569669d31, type: 3}
+=======
+>>>>>>> Stashed changes
 --- !u!1 &830244723
 GameObject:
   m_ObjectHideFlags: 0
@@ -2421,6 +2424,42 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1 &508101294954592834
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8258042962656892494}
+  - component: {fileID: 4055912453166353755}
+  - component: {fileID: 3872161329221278576}
+  m_Layer: 5
+  m_Name: ItemImage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!1 &563960816453666649
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8616033265044126190}
+  - component: {fileID: 5417912376465088624}
+  - component: {fileID: 4454832032660384677}
+  m_Layer: 5
+  m_Name: RankingImage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!1 &508101294954592834
 GameObject:
@@ -3355,7 +3394,11 @@ RectTransform:
   m_Father: {fileID: 1715794368556741423}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
+<<<<<<< Updated upstream
   m_AnchorMax: {x: 1, y: 1}
+=======
+  m_AnchorMax: {x: 0, y: 0}
+>>>>>>> Stashed changes
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3659,8 +3702,11 @@ MonoBehaviour:
   attackDamage: 20
   attackRange: 2
   attackCooldown: 0.5
+<<<<<<< Updated upstream
   pushRange: 3
   pushAngleDot: 0.6
+=======
+>>>>>>> Stashed changes
 --- !u!222 &4024304663933206918
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4383,7 +4429,11 @@ RectTransform:
   m_Father: {fileID: 5335429578262518797}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
+<<<<<<< Updated upstream
   m_AnchorMax: {x: 1, y: 1}
+=======
+  m_AnchorMax: {x: 0, y: 0}
+>>>>>>> Stashed changes
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4570,7 +4620,11 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
+<<<<<<< Updated upstream
   m_IsActive: 0
+=======
+  m_IsActive: 1
+>>>>>>> Stashed changes
 --- !u!1 &5568818517686787802
 GameObject:
   m_ObjectHideFlags: 0
@@ -4795,9 +4849,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Map1
-
-'
+  m_text: Map0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5136,9 +5188,15 @@ RectTransform:
   m_Father: {fileID: 8525461885948364434}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
+<<<<<<< Updated upstream
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -17, y: 0}
+=======
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+>>>>>>> Stashed changes
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &6666523737175079784
 CanvasRenderer:
@@ -5357,7 +5415,11 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.000015258789}
+<<<<<<< Updated upstream
   m_SizeDelta: {x: -26.365112, y: 10}
+=======
+  m_SizeDelta: {x: 0, y: 0}
+>>>>>>> Stashed changes
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &7148144849660597966
 CanvasRenderer:

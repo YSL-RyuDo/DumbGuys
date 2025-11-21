@@ -301,6 +301,7 @@ public class ChatRequest
     public string message;
 }
 
+<<<<<<< Updated upstream
 [System.Serializable]
 public class ChatMessagePacket
 {
@@ -332,3 +333,84 @@ public class LogoutRequest
     public string cmd;
     public string nickname;
 }
+=======
+public class CoinInfoRequest
+{
+    public string cmd = "get_coin_info";
+    public string nickname;
+
+    public CoinInfoRequest(string nickname)
+    {
+        this.nickname = nickname;
+    }
+}
+
+
+[System.Serializable]
+public class CoinInfoResponse
+{
+    public string type;   // "coin_info"
+    public int coin0;     // ¿¹: °ñµå
+    public int coin1;     // ¿¹: Áª
+}
+
+
+[Serializable]
+public class StoreItemData
+{
+    public int id;
+    public string name;
+    public int price;
+}
+
+[System.Serializable]
+public class StoreItemRequest
+{
+    public string cmd = "get_store_items";
+    public string category; // Accessories, Hat, Shoes µîµî
+}
+
+[Serializable]
+public class OwnedItemRequest
+{
+    public string cmd = "get_owned_items";
+    public string nickname;
+    public string category;
+}
+
+[Serializable]
+public class StoreItemResponse
+{
+    public string type;
+    public string category;
+    public StoreItemData[] items;
+}
+
+[Serializable]
+public class OwnedItemsResponse
+{
+    public string type;         // "owned_items"
+    public string category;     // ex: "Accessories"
+    public int[] owned;         // ex: [1,0,1,0,0,0]
+}
+
+[System.Serializable]
+public class BuyItemRequest
+{
+    public string cmd = "buy_item";
+    public string nickname;
+    public string category;
+    public int id;
+}
+
+[System.Serializable]
+public class BuyItemResult
+{
+    public string type;
+    public bool result;
+    public string category;
+    public int id;
+    public int coin1;
+    public string msg;
+}
+>>>>>>> Stashed changes
