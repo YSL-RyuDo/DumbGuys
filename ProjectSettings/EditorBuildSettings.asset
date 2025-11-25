@@ -22,7 +22,7 @@ EditorBuildSettings:
     guid: 2daa136466044584eaaa835765df01eb
   - enabled: 1
     path: Assets/Scenes/Map1Scene.unity
-    guid: 5955f7e3a11f2d64d854a4b0634e8406
+    guid: 35083a32c872f4d45aa611baf89ee533
   - enabled: 1
     path: Assets/Scenes/Map2Scene.unity
     guid: f1c15e727e576c04c8f205158155cc60
@@ -32,11 +32,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Tutorial0Scene.unity
     guid: 956bd4a6c659b384daeb9f7010009ddc
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Tutorial0Scene.unity
     guid: 956bd4a6c659b384daeb9f7010009ddc
   - enabled: 1
     path: Assets/Scenes/StoreScene.unity
     guid: 26e806d25e25b284f89877b7fc3efdb4
+  - enabled: 1
+    path: Assets/Scenes/MyPageScene.unity
+    guid: 39aa76503b71b644fbf69fb8eb20e03a
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

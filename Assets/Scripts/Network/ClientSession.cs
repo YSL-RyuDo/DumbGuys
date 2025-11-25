@@ -25,6 +25,11 @@ public class ClientSession : MonoBehaviour
         IsLoggedIn = true;
     }
 
+    public void UpdateNickname(string newNickname)
+    {
+        Nickname = newNickname;
+    }
+
     public void Logout()
     {
         IsLoggedIn = false;

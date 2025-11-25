@@ -411,3 +411,38 @@ public class BuyItemResult
     public int coin1;
     public string msg;
 }
+
+[System.Serializable]
+public class NicknameChangeRequest
+{
+    public string cmd = "change_nickname";
+    public string oldNickname;
+    public string newNickname;
+}
+
+[System.Serializable]
+public class NicknameChangeResponse
+{
+    public string type = "nickname_change";
+    public bool result;
+    public string newNickname;
+    public string msg;
+}
+
+[System.Serializable]
+public class GachaRequest
+{
+    public string cmd = "gacha";
+    public string nickname;
+}
+
+[System.Serializable]
+public class GachaResponse
+{
+    public string type;      // "gacha_result"
+    public bool result;      // true / false
+    public string msg;       // 실패 시 메세지
+    public string category;  // 뽑은 카테고리
+    public int id;           // 뽑은 아이템 index
+    public int coin0;        // 최신 coin0
+}

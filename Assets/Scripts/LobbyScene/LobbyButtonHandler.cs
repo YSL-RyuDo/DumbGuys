@@ -466,4 +466,31 @@ public class LobbyButtonHandler : MonoBehaviour
         StopHighlightButton("Tutorial0");
     }
 
+    // === MY PAGE 버튼 ===
+    public void OnClickMyPage()
+    {
+        var tutorial = TutorialManager.Instance;
+
+        // 튜토리얼 중이면 누르면 안됨
+        if (tutorial != null && !tutorial.IsTutorialDone)
+        {
+            Debug.Log("[Lobby] MyPage clicked (Tutorial Active)");
+            return;
+        }
+
+        Debug.Log("[Lobby] MyPage clicked (Normal Mode)");
+
+        selectedSceneName = "MyPageScene";
+
+        // 패널 닫기
+        if (gameModeUI != null)
+            gameModeUI.SetActive(false);
+
+        if (tutorialActionPanel != null)
+            tutorialActionPanel.SetActive(true);
+
+        // 씬 이동
+        SceneManager.LoadScene("MyPageScene");
+    }
+
 }

@@ -14,10 +14,31 @@ public class StoreUI : MonoBehaviour
     public Transform contentParent;     // ScrollView Content
     public GameObject itemPrefab;       // 상점 아이템 프리팹
 
+    [SerializeField] private GameObject gachaPopup;   // 프리팹 UI
+    [SerializeField] private Image gachaItemImage;    // 결과 이미지
+    [SerializeField] private TextMeshProUGUI gachaItemText;
+    [SerializeField] private GameObject popup;
+    [SerializeField] private TextMeshProUGUI popupText;
+
     private void Awake()
     {
         Instance = this;
     }
+
+    public void OnClickGacha()
+    {
+        Debug.Log("[Store] Gacha button clicked");
+
+        var req = new GachaRequest
+        {
+            cmd = "gacha",
+            nickname = ClientSession.Instance.Nickname
+        };
+
+        NetworkManager.Instance.SendJson(req);
+        Debug.Log("[Store] Sent gacha request to server");
+    }
+
 
     public void ApplyCoin(CoinInfoResponse res)
     {
@@ -102,6 +123,57 @@ public class StoreUI : MonoBehaviour
     public void UpdateCoin1(int newValue)
     {
         coin1Text.text = newValue.ToString();
+    }
+
+    public void UpdateCoin0(int newValue)
+    {
+        if (coin0Text != null)
+            coin0Text.text = newValue.ToString();
+    }
+
+    public void ShowGachaResult(string category, int id)
+    {
+        if (gachaPopup == null)
+        {
+            Debug.LogError("[StoreUI] gachaPopup not assigned!");
+            return;
+        }
+
+        gachaPopup.SetActive(true);
+
+        // 이미지 로드
+        string path = $"Items/{category}/{category}{id}";
+        Sprite sp = Resources.Load<Sprite>(path);
+
+        if (gachaItemImage != null)
+            gachaItemImage.sprite = sp;
+
+        if (gachaItemText != null)
+            gachaItemText.text = $"{category} {id} get!";
+    }
+
+    public void HideGachaPopup()
+    {
+        if (gachaPopup != null)
+            gachaPopup.SetActive(false);
+    }
+
+    public void ShowPopup(string msg)
+    {
+        if (popup == null)
+        {
+            Debug.LogError("[StoreUI] popup object not assigned!");
+            return;
+        }
+
+        popupText.text = msg;
+        popup.SetActive(true);
+    }
+
+    public void HidePopup()
+    {
+        if (popup != null)
+            popup.SetActive(false);
     }
 
 }
