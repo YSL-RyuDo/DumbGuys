@@ -2056,7 +2056,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 26167334}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99999833
+  m_Size: 0.99999666
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3977,7 +3977,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0000004041813}
+  m_AnchoredPosition: {x: 0, y: 0.00020589939}
   m_SizeDelta: {x: 0, y: 840}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1435152408
@@ -5875,7 +5875,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8a7085412f9fbe4197ac6afa0afbf7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  category: Outwear
+  category: Outerwear
 --- !u!1 &1969731989
 GameObject:
   m_ObjectHideFlags: 0

@@ -446,3 +446,19 @@ public class GachaResponse
     public int id;           // 뽑은 아이템 index
     public int coin0;        // 최신 coin0
 }
+
+[Serializable]
+public class AppearanceChangeRequest
+{
+    public string cmd = "change_appearance";
+    public string nickname;
+    public string category;
+    public int id;
+}
+
+[System.Serializable]
+public class MatchCancelRequest
+{
+    public string cmd = "match_cancel";
+    public string nickname;
+}

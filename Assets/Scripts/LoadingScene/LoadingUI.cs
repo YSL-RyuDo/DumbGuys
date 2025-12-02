@@ -40,8 +40,28 @@ public class LoadingUI : MonoBehaviour
 
     private void OnClickLobby()
     {
+        // 1) 매칭 취소 요청 전송
+        SendMatchCancel();
+
+        // 2) 바로 로비 씬으로 이동
         SceneManager.LoadScene("LobbyScene");
     }
+
+    private void SendMatchCancel()
+    {
+        if (!ClientSession.Instance.IsLoggedIn)
+            return;
+
+        var req = new MatchCancelRequest
+        {
+            cmd = "match_cancel",
+            nickname = ClientSession.Instance.Nickname
+        };
+
+        NetworkManager.Instance.SendJson(req);
+        Debug.Log("[MyPage] Sent match_cancel");
+    }
+
 
     private void HandleServerMessage(string json)
     {

@@ -368,6 +368,13 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json);
                     });
                     return;
+                case "appearance_update":
+                    //Debug.Log("[Store] Received gacha_result packet.");
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        OnMessageReceived?.Invoke(json);
+                    });
+                    return;
 
 
 
