@@ -63,6 +63,8 @@ public class CharacterMotor : MonoBehaviour
 
     public bool IsGrounded()
     {
-        return Physics.Raycast(transform.position, Vector3.down, 1.1f);
+        Vector3 origin = transform.position + Vector3.up * 0.1f; // »ìÂ¦ À§¿¡¼­
+        return Physics.Raycast(origin, Vector3.down, 0.3f);
     }
+
 }
