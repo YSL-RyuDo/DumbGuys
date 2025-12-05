@@ -6,7 +6,9 @@ public class PipeSplineTrigger : MonoBehaviour
     public SplineContainer spline;
     public float travelTime = 2f;
 
-    private Transform player;
+    public Transform playerModel;  // 반드시 실제 외형의 Transform
+
+    private Transform playerRoot;
     private Rigidbody playerRb;
 
     private float t = 0f;
@@ -17,21 +19,22 @@ public class PipeSplineTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (moving) return; // 중복 트리거 방지
+
         if (other.CompareTag("Player"))
         {
-            player = other.transform;
-            playerRb = player.GetComponent<Rigidbody>();
+            playerRoot = other.transform;
+            playerRb = playerRoot.GetComponent<Rigidbody>();
 
-            // 원래 크기 저장
-            originalScale = player.localScale;
+            // 실제로 눈에 보이는 모델의 스케일 저장
+            originalScale = playerModel.localScale;
 
-            // 파이프 들어가는 크기로 축소
-            player.localScale = pipeScale;
+            // 축소
+            playerModel.localScale = pipeScale;
 
             // 물리 잠금
             playerRb.isKinematic = true;
 
-            // 이동 시작
             moving = true;
             t = 0f;
         }
@@ -47,21 +50,19 @@ public class PipeSplineTrigger : MonoBehaviour
         {
             moving = false;
 
-            // 플레이어 원래 스케일 복구
-            player.localScale = originalScale;
+            // 원래 크기 복구
+            playerModel.localScale = originalScale;
 
             // 물리 복구
-            if (playerRb != null)
-                playerRb.isKinematic = false;
+            playerRb.isKinematic = false;
 
             return;
         }
 
-        // 스플라인 따라 이동
         Vector3 pos = spline.EvaluatePosition(t);
         Vector3 tangent = spline.EvaluateTangent(t);
 
-        player.position = pos;
-        player.rotation = Quaternion.LookRotation(tangent);
+        playerRoot.position = pos;
+        playerRoot.rotation = Quaternion.LookRotation(tangent);
     }
 }
