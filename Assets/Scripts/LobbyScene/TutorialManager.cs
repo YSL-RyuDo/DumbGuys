@@ -23,7 +23,7 @@ public class TutorialManager : MonoBehaviour
         ShowStage0Message();
     }
 
-    // === [튜토리얼0 단계] ===
+    // [튜토리얼0 단계]
     private void ShowStage0Message()
     {
         var lobby = LobbyButtonHandler.Instance;

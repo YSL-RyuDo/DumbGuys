@@ -60,7 +60,7 @@ public class GameUIManager : MonoBehaviour
         winZone = GameObject.Find("WinZone")?.transform;
 
         nicknameText.text = ClientSession.Instance.Nickname;
-        kdaText.text = "0 / 0";
+        //kdaText.text = "0 / 0";
         hpSlider.value = 1f;
 
         chatSendButton.onClick.AddListener(SendChatMessage);

@@ -5,12 +5,9 @@ public class PipeSplineTrigger : MonoBehaviour
 {
     public SplineContainer spline;
     public float travelTime = 2f;
-
     public Transform playerModel;  // 반드시 실제 외형의 Transform
-
     private Transform playerRoot;
     private Rigidbody playerRb;
-
     private float t = 0f;
     private bool moving = false;
 

@@ -75,7 +75,7 @@ public class LobbyButtonHandler : MonoBehaviour
         SceneManager.LoadScene("LoginScene");
     }
 
-    // === PLAY 버튼 ===
+    // PLAY 버튼
     public void OnClickPlay()
     {
         var tutorial = TutorialManager.Instance;
@@ -83,15 +83,14 @@ public class LobbyButtonHandler : MonoBehaviour
         // === 튜토리얼 중일 때 ===
         if (tutorial != null && !tutorial.IsTutorialDone)
         {
-            // 튜토리얼 단계가 4일 경우 -> 플레이 버튼 클릭으로 완료 처리
             if (tutorial.GetStage() == 4)
             {
                 Debug.Log("[Lobby] Play button pressed during tutorial -> complete tutorial");
-                tutorial.OnNextTutorial0Step(); // case 5 → MarkTutorialCompleted() 실행
+                tutorial.OnNextTutorial0Step();
             }
         }
 
-        // === 일반 실행 로직 ===
+        // 일반 실행 로직
         if (!string.IsNullOrEmpty(selectedSceneName))
         {
             Debug.Log($"[Lobby] Play button pressed -> Loading selected scene: {selectedSceneName}");

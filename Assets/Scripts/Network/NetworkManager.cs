@@ -40,10 +40,10 @@ public class NetworkManager : MonoBehaviour
     private void Start()
     {
         // 랜서버
-        Connect("127.0.0.1", 9000);
+        //Connect("127.0.0.1", 9000);
         
         // 포트포워딩
-        //Connect("211.247.47.240", 9000);
+        Connect("211.247.47.240", 9000);
     }
 
     public void Connect(string ip, int port)
@@ -134,11 +134,9 @@ public class NetworkManager : MonoBehaviour
                         message = $"Login failed: {res.msg}";
                     }
                     break;
-
                 case "signup_result":
                     message = res.result ? "Sign-up successful." : res.msg;
                     break;
-
                 case "player_info":
                     Debug.Log("[Client] Received player info packet.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -146,7 +144,6 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json);
                     });
                     return;
-
                 case "appearance_info":
                     Debug.Log("[Client] Received appearance info packet.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -154,7 +151,6 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json);
                     });
                     return;
-
                 case "tutorial_info": // 튜토리얼 정보 수신 처리 추가
                     Debug.Log("[Client] Received tutorial info packet.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -162,7 +158,6 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json);
                     });
                     return;
-
                 case "enemy_info":
                     Debug.Log("[Client] Received enemy appearance info packet.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -171,12 +166,10 @@ public class NetworkManager : MonoBehaviour
 
                     });
                     return;
-
                 case "match_wait":
                     Debug.Log("[LoadingScene] Waiting for opponent...");
                     // TODO: 로딩 UI에 “매칭 중...” 표시
                     break;
-
                 case "match_found":
                     Debug.Log("[LoadingScene] Match found! Requesting enemy appearance...");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -184,7 +177,6 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json); // 로딩씬이 여기서 적 외형 요청함
                     });
                     return;
-
                 case "match_ready_ack":
                     Debug.Log("[LoadingScene] Match ready acknowledged - waiting for opponent...");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -255,7 +247,6 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json); // GameSceneController에서 실제 애니메이션 실행
                     });
                     return;
-
                 case "push_hit":
                     var data = JsonUtility.FromJson<PushHitPacket>(json);
                     Debug.Log($"[GameScene] Received push_hit → {data.attacker} pushed {data.target}");
@@ -275,7 +266,6 @@ public class NetworkManager : MonoBehaviour
                         }
                     });
                     return;
-
                 case "chat_message":
                     try
                     {
@@ -299,9 +289,6 @@ public class NetworkManager : MonoBehaviour
                         Debug.LogWarning($"[Chat] Failed to parse chat_message packet: {e.Message}");
                     }
                     return;
-
-
-
                 case "score_update":
                     Debug.Log("[GameScene] Received score update packet.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -309,7 +296,6 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json); // GameSceneController UI 업데이트
                     });
                     return;
-
                 case "round_end":
                     Debug.Log("[GameScene] Round ended → returning to ChooseScene...");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -317,7 +303,6 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json); // GameSceneController에서 처리
                     });
                     return;
-
                 case "game_end":
                     Debug.Log("[GameScene] Game ended → forwarding to ResultScene...");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -333,7 +318,6 @@ public class NetworkManager : MonoBehaviour
                         // ResultSceneController에서 처리
                     });
                     return;
-
                 case "coin_info":
                     Debug.Log("[StoreScene] Received coin_info packet.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -375,9 +359,6 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json);
                     });
                     return;
-
-
-
                 case "error":
                     message = $"Error: {res.msg}";
                     break;

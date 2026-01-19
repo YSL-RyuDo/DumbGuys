@@ -1786,7 +1786,7 @@ MonoBehaviour:
   loginButton: {fileID: 283757517}
   changeModeButton: {fileID: 1802305018}
   quitButton: {fileID: 305177870}
-  loginButtonLabel: {fileID: 0}
+  loginButtonLabel: {fileID: 411310459}
   messageText: {fileID: 411310459}
 --- !u!1 &1317084852
 GameObject:

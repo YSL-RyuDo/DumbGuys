@@ -50,7 +50,7 @@ public class LobbyUI : MonoBehaviour
 
     public void ApplyPlayerInfo(PlayerInfoResponse info)
     {
-        // === Text ===
+        // Text 
         NickNameText.text = info.nickname;
         LevelText.text = $"Lv. {info.level}";
         Coin0Text.text = info.coin0.ToString();

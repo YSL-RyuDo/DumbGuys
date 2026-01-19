@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6211277075779591348
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8456993037255863206}
+  - component: {fileID: 9005257349698523599}
+  - component: {fileID: 6967429046174272294}
+  m_Layer: 0
+  m_Name: TutorialManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8456993037255863206
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6211277075779591348}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.9386942, y: 9.446715, z: -10.759033}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9005257349698523599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6211277075779591348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05f245c2da5f7e044951cc457583fdc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  introCamera: {fileID: 0}
+  mainCamera: {fileID: 0}
+  pointA: {fileID: 0}
+  pointB: {fileID: 0}
+  backgroundImage: {fileID: 0}
+  fadeImage: {fileID: 0}
+  gameUI: {fileID: 0}
+  backgroundDuration: 3
+  moveDuration: 3
+  delayBeforeSwitch: 0.3
+  fadeDuration: 1
+--- !u!114 &6967429046174272294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6211277075779591348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab0b41a619987904283198b8ddd75d8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerSpawn0: {fileID: 0}
+  playerSpawn1: {fileID: 0}
+  playerSpawn2: {fileID: 0}
+  playerSpawn3: {fileID: 0}
+  playerSpawn4: {fileID: 0}
+  playerSpawn5: {fileID: 0}
+  playerAppearance: {fileID: 0}
+  cubes:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  enemyPrefab0: {fileID: 0}
+  enemyPrefab1: {fileID: 0}
+  enemyPrefab2: {fileID: 0}
+  tutorialHintPanel: {fileID: 0}
+  tutorialHintText: {fileID: 0}
+  hintShowSeconds: 2
+  gameUI: {fileID: 0}
+  nicknameText: {fileID: 0}
