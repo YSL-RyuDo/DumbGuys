@@ -55,8 +55,15 @@ public class Tutorial0Manager : MonoBehaviour
     private Coroutine itemLoopRoutine;
     private ItemPickup.ItemType? currentItem = null;
     private bool hasItem = false;
+    private bool appearanceApplied = false;
 
     private void Awake() => Instance = this;
+
+    private void Start()
+    {
+        RequestPlayerAppearance();
+        ApplySpawnPosition();
+    }
 
     private void Update()
     {
@@ -84,8 +91,8 @@ public class Tutorial0Manager : MonoBehaviour
 
     private IEnumerator FirstHintSequence()
     {
-        ApplySpawnPosition();
-        RequestPlayerAppearance();
+        // 외형은 이미 요청되어 있거나, 도착하면 자동 적용됨
+        playerAppearance.gameObject.SetActive(true);
 
         if (nicknameText != null && ClientSession.Instance != null)
             nicknameText.text = ClientSession.Instance.Nickname;
@@ -94,7 +101,6 @@ public class Tutorial0Manager : MonoBehaviour
         if (player != null)
             player.SetInputLocked(true);
 
-        // 첫 큐브만 활성화
         for (int i = 0; i < cubes.Length; i++)
             if (cubes[i] != null)
                 cubes[i].SetActive(i == 0);
@@ -117,19 +123,33 @@ public class Tutorial0Manager : MonoBehaviour
         if (NetworkManager.Instance == null || ClientSession.Instance == null)
             return;
 
-        var req = new AppearanceRequest { nickname = ClientSession.Instance.Nickname };
+        var req = new AppearanceRequest
+        {
+            nickname = ClientSession.Instance.Nickname
+        };
+
         NetworkManager.Instance.SendJson(req);
+
+        NetworkManager.Instance.OnMessageReceived -= HandleServerMessage;
         NetworkManager.Instance.OnMessageReceived += HandleServerMessage;
     }
 
+
     private void HandleServerMessage(string json)
     {
-        if (!json.Contains("\"type\":\"appearance_info\"")) return;
+        if (!json.Contains("\"type\":\"appearance_info\""))
+            return;
+
         var data = JsonUtility.FromJson<AppearanceResponse>(json);
-        if (data.nickname != ClientSession.Instance.Nickname) return;
+
+        if (data.nickname != ClientSession.Instance.Nickname)
+            return;
 
         playerAppearance.ApplyAppearance(data);
+
+        appearanceApplied = true;
     }
+
 
     private void ApplySpawnPosition()
     {
@@ -178,6 +198,7 @@ public class Tutorial0Manager : MonoBehaviour
 
             case 5:
                 currentSpawnIndex = 4;
+                DeactivateAllCubes();
                 ShowHint("Use your left attack now!");
                 GiveItemWithRespawn(player, ItemPickup.ItemType.AttackUp);
                 ActivateEnemy(0);
@@ -185,13 +206,21 @@ public class Tutorial0Manager : MonoBehaviour
 
             case 6:
                 ShowHint("Use your Push skill! Press CTRL!");
+                DeactivateAllCubes();
                 GiveItemWithRespawn(player, ItemPickup.ItemType.Push);
                 ActivateEnemy(1);
                 break;
 
             case 7:
                 ShowHint("You obtained a Heal item! Try using it!");
+                DeactivateAllCubes();
                 ActivateEnemy(2);
+
+                if (itemLoopRoutine != null)
+                {
+                    StopCoroutine(itemLoopRoutine);
+                    itemLoopRoutine = null;
+                }
 
                 if (!healGiven)
                 {
@@ -398,4 +427,14 @@ public class Tutorial0Manager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         SceneManager.LoadScene(sceneName);
     }
+
+    private void DeactivateAllCubes()
+    {
+        if (cubes == null) return;
+
+        for (int i = 0; i < cubes.Length; i++)
+            if (cubes[i] != null)
+                cubes[i].SetActive(false);
+    }
+
 }

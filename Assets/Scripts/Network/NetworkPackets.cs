@@ -199,6 +199,24 @@ public class EnemyMovePacket
     public float rx, ry, rz;  // È¸Àü
 }
 
+[System.Serializable]
+public class JumpRequest
+{
+    public string cmd = "player_jump";
+    public string nickname;
+    public float jumpVelocityY;
+}
+
+
+[System.Serializable]
+public class EnemyJumpPacket
+{
+    public string type;
+    public string nickname;
+    public float jumpVelocityY;
+}
+
+
 [Serializable]
 public class PlayerWinPacket
 {

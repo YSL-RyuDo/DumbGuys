@@ -40,10 +40,10 @@ public class NetworkManager : MonoBehaviour
     private void Start()
     {
         // 랜서버
-        //Connect("127.0.0.1", 9000);
+        Connect("127.0.0.1", 9000);
         
         // 포트포워딩
-        Connect("211.247.47.240", 9000);
+        //Connect("211.247.47.240", 9000);
     }
 
     public void Connect(string ip, int port)
@@ -78,7 +78,7 @@ public class NetworkManager : MonoBehaviour
         stream.Write(body, 0, body.Length);
         stream.Flush();
 
-        Debug.Log($"[Client] Sent: {json}");
+        //Debug.Log($"[Client] Sent: {json}");
     }
 
     private void BeginRead()
@@ -226,6 +226,16 @@ public class NetworkManager : MonoBehaviour
                         OnMessageReceived?.Invoke(json); // GameSceneController에서 처리
                     });
                     return;
+
+                case "enemy_jump":
+                    Debug.Log("[GameScene] Received enemy_jump packet.");
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        OnMessageReceived?.Invoke(json); // GameSceneController에서 처리
+                    });
+                    return;
+
+
                 case "player_hit":
                     Debug.Log("[Network] Received player_hit packet from server.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>

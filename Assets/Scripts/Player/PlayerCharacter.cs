@@ -23,6 +23,11 @@ public class PlayerCharacter : MonoBehaviour
     private int currentHealth;
     private bool isDead = false;
 
+    private Vector3 lastSentPos;
+    private Quaternion lastSentRot;
+    private bool wasGroundedLastFrame = true;
+
+
     public IInputProvider InputProvider { get; private set; }
     public CharacterMotor Motor => motor;
     public IMovementStrategy CurrentStrategy { get; set; }
@@ -39,6 +44,7 @@ public class PlayerCharacter : MonoBehaviour
 
     private bool isInputLocked = true;
     public bool IsInputLocked => isInputLocked;
+    private bool wasGrounded = true;
 
     void Awake()
     {
@@ -54,6 +60,7 @@ public class PlayerCharacter : MonoBehaviour
         bool isChatting = GameUIManagerExistsAndChatting();
         bool isTutorial = Tutorial0Manager.Instance != null;
 
+        // === 입력 잠금 처리 ===
         if ((isChatting && !isTutorial) || isInputLocked)
         {
             animator.SetFloat("Hor", 0);
@@ -76,7 +83,19 @@ public class PlayerCharacter : MonoBehaviour
             sendTimer = 0f;
             SendMovePacket();
         }
+
+        bool isGroundedNow = motor.IsGrounded();
+
+        // 땅 → 공중 : 점프 시작 순간
+        if (wasGroundedLastFrame && !isGroundedNow)
+        {
+            SendJumpPacket();
+            Debug.Log("[JUMP SEND] jump event sent");
+        }
+
+        wasGroundedLastFrame = isGroundedNow;
     }
+
 
 
     private bool GameUIManagerExistsAndChatting()
@@ -284,6 +303,13 @@ public class PlayerCharacter : MonoBehaviour
         Vector3 pos = transform.position;
         Quaternion rot = transform.rotation;
 
+        if (Vector3.Distance(pos, lastSentPos) < 0.01f &&
+            Quaternion.Angle(rot, lastSentRot) < 1f)
+            return;
+
+        lastSentPos = pos;
+        lastSentRot = rot;
+
         var packet = new MovePacket
         {
             nickname = ClientSession.Instance.Nickname,
@@ -296,8 +322,8 @@ public class PlayerCharacter : MonoBehaviour
         };
 
         NetworkManager.Instance.SendJson(packet);
+        Debug.Log($"[MOVE SEND] {transform.position}");
     }
-
     public void OnItemPicked(ItemPickup.ItemType itemType)
     {
         Debug.Log($"[Item] Picked up: {itemType}");
@@ -457,4 +483,30 @@ public class PlayerCharacter : MonoBehaviour
             animator.SetFloat("Vert", 0);
         }
     }
+
+    private void SendJumpPacket()
+    {
+        if (NetworkManager.Instance == null || !ClientSession.Instance.IsLoggedIn)
+            return;
+
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            Debug.LogWarning("[JUMP SEND] Rigidbody not found");
+            return;
+        }
+
+        float jumpVelocityY = rb.velocity.y;
+
+        var req = new JumpRequest
+        {
+            nickname = ClientSession.Instance.Nickname,
+            jumpVelocityY = jumpVelocityY
+        };
+
+        NetworkManager.Instance.SendJson(req);
+
+        Debug.Log($"[JUMP SEND] velY = {jumpVelocityY}");
+    }
+
 }
