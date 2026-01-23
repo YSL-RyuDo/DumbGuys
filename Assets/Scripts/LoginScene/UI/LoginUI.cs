@@ -24,9 +24,21 @@ public class LoginUI : MonoBehaviour
     {
         nicknameInput.gameObject.SetActive(false);
 
-        loginButton.onClick.AddListener(() => EventBus.RaiseLogin());
-        changeModeButton.onClick.AddListener(() => EventBus.RaiseChangeMode());
-        quitButton.onClick.AddListener(() => EventBus.RaiseQuit());
+        loginButton.onClick.AddListener(() =>
+        {
+            SoundManager.Instance.PlaySFX("mixkit-classic-click");
+            EventBus.RaiseLogin();
+        });
+        changeModeButton.onClick.AddListener(() =>
+        {
+            SoundManager.Instance.PlaySFX("mixkit-classic-click");
+            EventBus.RaiseChangeMode();
+        });
+        quitButton.onClick.AddListener(() =>
+        {
+            SoundManager.Instance.PlaySFX("mixkit-arcade-retro-game-over");
+            EventBus.RaiseQuit();
+        });
 
         loginButtonLabel.text = "Login";
     }
