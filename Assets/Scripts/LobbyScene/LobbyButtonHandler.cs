@@ -51,6 +51,7 @@ public class LobbyButtonHandler : MonoBehaviour
 
     private void Start()
     {
+        PlayClickSound();
         if (logoutOkButton != null)
             logoutOkButton.onClick.AddListener(OnLogoutConfirm);
     }
@@ -78,6 +79,7 @@ public class LobbyButtonHandler : MonoBehaviour
     // PLAY 버튼
     public void OnClickPlay()
     {
+        PlayClickSound();
         var tutorial = TutorialManager.Instance;
 
         // === 튜토리얼 중일 때 ===
@@ -116,6 +118,7 @@ public class LobbyButtonHandler : MonoBehaviour
 
     public void OnClickStore()
     {
+        PlayClickSound();
         var tutorial = TutorialManager.Instance;
 
         // 튜토리얼 중일 때는 다른 버튼처럼 튜토리얼 매니저로 전달
@@ -144,6 +147,7 @@ public class LobbyButtonHandler : MonoBehaviour
 
     public void OnClickMode()
     {
+        PlayClickSound();
         //Debug.Log("[Lobby] ModeButton clicked");
 
         bool newState = !gameModeUI.activeSelf;
@@ -165,6 +169,7 @@ public class LobbyButtonHandler : MonoBehaviour
 
     public void OnClickSinglePlay()
     {
+        PlayClickSound();
         Debug.Log("[Lobby] SinglePlay clicked");
         isMultiMode = false;
 
@@ -202,6 +207,7 @@ public class LobbyButtonHandler : MonoBehaviour
     // MULTIPLAY 버튼
     public void OnClickMultiPlay()
     {
+        PlayClickSound();
         //Debug.Log("[Lobby] MultiPlay clicked (Normal Mode)");
         isMultiMode = true;
 
@@ -222,6 +228,7 @@ public class LobbyButtonHandler : MonoBehaviour
 
     public void OnClickTutorial0()
     {
+        PlayClickSound();
         //Debug.Log("[Lobby] Tutorial0 clicked");
 
         var tutorial = TutorialManager.Instance;
@@ -259,6 +266,7 @@ public class LobbyButtonHandler : MonoBehaviour
 
     public void OnClickMap0()
     {
+        PlayClickSound();
         Debug.Log("[Lobby] Map0 button clicked");
         SetModeButtonSprite("Map0");
         SetGameModeUIActive(false);
@@ -463,6 +471,7 @@ public class LobbyButtonHandler : MonoBehaviour
     // === MY PAGE 버튼 ===
     public void OnClickMyPage()
     {
+        PlayClickSound();
         var tutorial = TutorialManager.Instance;
 
         // 튜토리얼 중이면 누르면 안됨
@@ -487,4 +496,9 @@ public class LobbyButtonHandler : MonoBehaviour
         SceneManager.LoadScene("MyPageScene");
     }
 
+    public void PlayClickSound()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlaySFX("mixkit-classic-click");
+    }
 }
