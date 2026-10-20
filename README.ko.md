@@ -1,6 +1,8 @@
 # DumbGuys
 
-[English](README.md), [Korean](README.ko.md), [Japanese](README.ja.md)
+<!-- portfolio-languages -->
+[![English](https://ysl-ryudo.github.io/assets/diagrams/language-en.svg)](README.md) [![한국어 (현재 언어)](https://ysl-ryudo.github.io/assets/diagrams/language-ko-current.svg)](README.ko.md) [![日本語](https://ysl-ryudo.github.io/assets/diagrams/language-ja.svg)](README.ja.md)
+<!-- /portfolio-languages -->
 
 계정과 로비, 경기, 외형 데이터가 연결되는 멀티플레이 팀 게임입니다.
 
@@ -15,15 +17,17 @@
 
 [DumbGuys full play](https://www.youtube.com/watch?v=Z4tffAvRjJs)
 
+## 게임에서 보는 구현
+
+[![계정 생성과 로비 이동을 거쳐 튜토리얼에서 실제 이동과 점프 경로를 실행한 화면.](https://ysl-ryudo.github.io/assets/gameplay/dumbguys-movement.webp)](https://ysl-ryudo.github.io/assets/gameplay/dumbguys-movement.webp)
+
+계정 생성과 로비 이동을 거쳐 튜토리얼에서 실제 이동과 점프 경로를 실행한 화면.
+
 ## 게임 전체에서 맡은 구현
 
-Unity 클라이언트와 C++ 서버에서 이동, 장애물, 튜토리얼, 외형과 상점, 경기 네트워크를 개발했습니다. restore-1121 브랜치에는 main의 작은 스냅샷에 없는 클라이언트 작업도 있습니다. Unity 패키지와 샘플 코드, 가져온 그래픽은 외부 제작물로 구분합니다.
+Unity에서 이동, 장애물, 튜토리얼, 외형과 상점 흐름을 개발하고 C++ 서버에서 계정, 매칭과 경기 통신을 구현했습니다.
 
-**플레이 흐름**
-
-로그인 → 로비와 외형 → 매칭과 로딩 → 장애물 코스 → 도착과 낙하 → 결과
-
-소스 링크는 확인한 버전에 고정하고 기여 링크는 제가 작성한 병합 외 변경을 가리킵니다. 공동 파일을 연결했다고 단독 작성이라는 뜻은 아닙니다. 비공개 소스는 저장소 접근 권한이 필요합니다.
+[![담당 구현 흐름](https://ysl-ryudo.github.io/assets/diagrams/dumbguys-flow-ko.svg)](https://ysl-ryudo.github.io/assets/diagrams/dumbguys-flow-ko.svg)
 
 ### 이동 전략과 캐릭터 조작
 
@@ -55,14 +59,6 @@ Unity 클라이언트와 C++ 서버에서 이동, 장애물, 튜토리얼, 외�
 
 [StoreManager.cs (restore-1121)](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/StoreScene/StoreManager.cs), [내 변경 edffcc8](https://github.com/YSL-RyuDo/DumbGuys/commit/edffcc86e34c4d817a000462dbbe19502d4843fe), [MyPageManager.cs (restore-1121)](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/MyPageScene/MyPageManager.cs), [내 변경 94edd35](https://github.com/YSL-RyuDo/DumbGuys/commit/94edd358e09412d75e7836ee8f7ff17519f206fe), [MatchManager.cpp (main)](https://github.com/YSL-RyuDo/DumbGuysServer/blob/75ad6626d21d7638d37240c85ff4a9aa481e5620/DumbGuysServer/MatchManager.cpp), [내 변경 bb103b5](https://github.com/YSL-RyuDo/DumbGuysServer/commit/bb103b5d1c143534126cf8dfb577812eef035d90)
 
-## 내 기여
-
-클라이언트 네트워크와 로그인, 로비, 로딩, 경기, 결과 흐름을 작업했습니다.
-
-이동, 입력 분리와 이동 발판, 밀기, 낙하, 곡선 파이프 이동 등의 상호작용을 구현했습니다.
-
-restore-1121에서 통합, 사운드 후속 작업을 이어갔습니다. 기본 브랜치에 없는 후속 작업이 이 브랜치에 있습니다.
-
 ## 기여 근거
 
 [Development branch / 작업 브랜치 / 作業ブランチ](https://github.com/YSL-RyuDo/DumbGuys/tree/restore-1121)
@@ -71,8 +67,6 @@ restore-1121에서 통합, 사운드 후속 작업을 이어갔습니다. 기본
 
 [Later snapshot / 후속 버전 / 後続版](https://github.com/YSL-RyuDo/DumbGuys/commit/6c30b670a68da9a89d8ad0445de376cd620a21a7)
 
-커밋은 설명한 변경의 근거이며 기여율 점수가 아닙니다. 외부 에셋과 팀원 작업의 크레딧은 구분합니다.
-
 ## 구현과 설계
 
 계정, 방, 플레이어 외형 정보를 로비와 경기 흐름으로 연결하는 작업입니다. 클라이언트와 서버를 서로 맞는 버전에서 살펴보는 것도 중요합니다.
@@ -80,8 +74,6 @@ restore-1121에서 통합, 사운드 후속 작업을 이어갔습니다. 기본
 계정, 연결 처리, 방, 플레이어 상태, 상점, 외형 데이터와 클라이언트 로비, 경기 연동을 작업했습니다.
 
 ## 코드의 동작과 구현 방식을 택한 이유
-
-확인한 구현이 어떤 제약을 다루며 어떤 장단점이 생기는지 설명합니다. 설계 효과에 대한 설명은 코드 분석이며, 비교한 모든 대안을 당시 직접 구현했다는 뜻은 아닙니다. 기여 링크는 공동 프로젝트 안의 담당 변경을 가리키고 소스 링크는 기존 접근 권한을 유지합니다.
 
 ### 대기 시간에 따라 매칭 조건을 넓히는 이유
 
@@ -99,7 +91,7 @@ MatchManager는 대기 중인 플레이어의 랭크, 점수, 레벨을 비교�
 
 **장단점과 검증 범위**
 
-허용 범위는 구현 정책이며 공정한 매칭이나 실제 대기 시간 단축이 측정되었다는 뜻은 아닙니다. 참가자 분포와 취소, 연결 종료 처리는 별도로 평가해야 합니다. 아래 클라이언트 근거는 restore-1121 브랜치로, 기본 브랜치와 같은 연동 상태라고 가정하지 않습니다.
+허용 범위는 참가자 수와 실력 분포에 따라 조정해야 합니다. 취소와 연결 종료 시 대기 항목을 제거하고, 경기 품질과 대기 시간을 측정해 기준을 조정해야 합니다.
 
 [DumbGuysServer/MatchManager.cpp](https://github.com/YSL-RyuDo/DumbGuysServer/blob/6c9f9da948008ace439ebfc7a1aeb4b130da12f0/DumbGuysServer/MatchManager.cpp), [DumbGuysServer/OwnedItemManager.cpp](https://github.com/YSL-RyuDo/DumbGuysServer/blob/6c9f9da948008ace439ebfc7a1aeb4b130da12f0/DumbGuysServer/OwnedItemManager.cpp), [DumbGuys/ClientSession.cs](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/Network/ClientSession.cs)
 
@@ -119,7 +111,7 @@ IInputProvider가 방향과 점프 입력을 제공하고 이동 전략은 다�
 
 **장단점과 검증 범위**
 
-모터는 Unity 물리와 지면 검사에 의존합니다. 경사와 이동 발판, 점프 중 효과 교체, 네트워크 보정은 플레이 검증이 필요합니다. 전략 인터페이스가 있다는 사실로 그 경우들이 통과했다고 볼 수는 없습니다.
+모터는 Unity 물리와 지면 검사에 의존합니다. 경사와 이동 발판, 점프 중 효과 교체와 네트워크 보정을 함께 다뤄야 합니다.
 
 [DumbGuys/IInputProvider.cs (restore-1121)](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/Player/IInputProvider.cs), [DumbGuys/IMovementStrategy.cs (restore-1121)](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/Player/IMovementStrategy.cs), [DumbGuys/CharacterMotor.cs (restore-1121)](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/Player/CharacterMotor.cs)
 
@@ -130,10 +122,6 @@ IInputProvider가 방향과 점프 입력을 제공하고 이동 전략은 다�
 Unity scene: [Assets/Scenes/LoginScene.unity](Assets/Scenes/LoginScene.unity)
 
 [DumbGuysServer](https://github.com/YSL-RyuDo/DumbGuysServer)
-
-## 개발, 검증 범위
-
-후속 클라이언트 구현은 main과 갈라진 restore-1121을 기준으로 살펴보세요. '완성'이라는 커밋 메시지를 현재 전체 플레이 검증으로 대체하지 않습니다. 에셋, 의존성의 원래 크레딧을 유지합니다.
 
 ## 관련 저장소
 

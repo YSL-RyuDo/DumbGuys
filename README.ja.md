@@ -1,6 +1,8 @@
 # DumbGuys
 
-[English](README.md), [Korean](README.ko.md), [Japanese](README.ja.md)
+<!-- portfolio-languages -->
+[![English](https://ysl-ryudo.github.io/assets/diagrams/language-en.svg)](README.md) [![한국어](https://ysl-ryudo.github.io/assets/diagrams/language-ko.svg)](README.ko.md) [![日本語（選択中）](https://ysl-ryudo.github.io/assets/diagrams/language-ja-current.svg)](README.ja.md)
+<!-- /portfolio-languages -->
 
 アカウント、ロビー、試合、外見データをつなぐマルチプレイヤーのチームゲームです。
 
@@ -15,15 +17,17 @@
 
 [DumbGuys full play](https://www.youtube.com/watch?v=Z4tffAvRjJs)
 
+## ゲーム内の実装
+
+[![アカウント作成とロビー遷移を経て、チュートリアルで移動とジャンプの実装を実行。](https://ysl-ryudo.github.io/assets/gameplay/dumbguys-movement.webp)](https://ysl-ryudo.github.io/assets/gameplay/dumbguys-movement.webp)
+
+アカウント作成とロビー遷移を経て、チュートリアルで移動とジャンプの実装を実行。
+
 ## ゲーム全体で担当した実装
 
-UnityクライアントとC++サーバーで移動、障害物、チュートリアル、外見・ショップ、試合通信を開発しました。restore-1121には小さいmain版にないクライアント作業があります。Unityパッケージ・サンプル・外部画像は第三者の制作物です。
+Unityの移動、障害物、チュートリアル、外見とショップを開発し、C++サーバーでアカウント、マッチング、試合通信を実装しました。
 
-**プレイの流れ**
-
-ログイン → ロビーと外見 → マッチングとロード → 障害物コース → 到達・落下 → 結果
-
-ソースリンクは確認した版に固定し、担当リンクは自分のマージ以外の変更を示します。共同ファイルは単独著作を意味しません。非公開ソースには閲覧権限が必要です。
+[![担当実装の流れ](https://ysl-ryudo.github.io/assets/diagrams/dumbguys-flow-ja.svg)](https://ysl-ryudo.github.io/assets/diagrams/dumbguys-flow-ja.svg)
 
 ### 移動戦略とキャラクター操作
 
@@ -55,14 +59,6 @@ UnityクライアントとC++サーバーで移動、障害物、チュートリ
 
 [StoreManager.cs (restore-1121)](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/StoreScene/StoreManager.cs), [担当変更 edffcc8](https://github.com/YSL-RyuDo/DumbGuys/commit/edffcc86e34c4d817a000462dbbe19502d4843fe), [MyPageManager.cs (restore-1121)](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/MyPageScene/MyPageManager.cs), [担当変更 94edd35](https://github.com/YSL-RyuDo/DumbGuys/commit/94edd358e09412d75e7836ee8f7ff17519f206fe), [MatchManager.cpp (main)](https://github.com/YSL-RyuDo/DumbGuysServer/blob/75ad6626d21d7638d37240c85ff4a9aa481e5620/DumbGuysServer/MatchManager.cpp), [担当変更 bb103b5](https://github.com/YSL-RyuDo/DumbGuysServer/commit/bb103b5d1c143534126cf8dfb577812eef035d90)
 
-## 担当した内容
-
-クライアント通信とログイン・ロビー・ロード・試合・結果のフローを担当しました。
-
-移動・入力の分離と、移動床、押し合い、落下、曲線パイプ移動などの操作を実装しました。
-
-restore-1121で統合・サウンドの作業を継続しました。デフォルトブランチにない後続の変更が含まれます。
-
 ## 貢献の根拠
 
 [Development branch / 작업 브랜치 / 作業ブランチ](https://github.com/YSL-RyuDo/DumbGuys/tree/restore-1121)
@@ -71,7 +67,7 @@ restore-1121で統合・サウンドの作業を継続しました。デフォ�
 
 [Later snapshot / 후속 버전 / 後続版](https://github.com/YSL-RyuDo/DumbGuys/commit/6c30b670a68da9a89d8ad0445de376cd620a21a7)
 
-コミットは記載した変更の根拠であり、貢献率の点数ではありません。外部素材・チームメンバーの貢献は区別します。
+外部素材・チームメンバーの貢献は区別します。
 
 ## 実装と設計
 
@@ -80,8 +76,6 @@ restore-1121で統合・サウンドの作業を継続しました。デフォ�
 アカウント・接続処理、ルーム・プレイヤー状態、ショップ・外見データ、クライアントのロビー・試合連携を担当しました。
 
 ## コードの動作と実装構造の理由
-
-確認した実装が扱う制約と利点・代償を説明します。設計効果の説明はコード分析であり、比較する全代案を当時試作したという意味ではありません。担当リンクは共同制作内の変更を示し、ソースの閲覧権限は維持します。
 
 ### 待ち時間に応じてマッチ条件を広げる理由
 
@@ -99,7 +93,7 @@ MatchManagerは待機プレイヤーのランク、スコア、レベルを比�
 
 **利点・代償と検証範囲**
 
-閾値は実装方針であり、公平性や実際の待ち時間短縮の測定結果ではありません。参加者分布、取消、切断は別途評価が必要です。以下のクライアントはrestore-1121ブランチで、既定ブランチと同じ連携状態とは限りません。
+許容範囲は参加人数と実力分布に応じた調整が必要です。取消・切断時には待機項目を除き、試合品質と待機時間を測定して基準を調整します。
 
 [DumbGuysServer/MatchManager.cpp](https://github.com/YSL-RyuDo/DumbGuysServer/blob/6c9f9da948008ace439ebfc7a1aeb4b130da12f0/DumbGuysServer/MatchManager.cpp), [DumbGuysServer/OwnedItemManager.cpp](https://github.com/YSL-RyuDo/DumbGuysServer/blob/6c9f9da948008ace439ebfc7a1aeb4b130da12f0/DumbGuysServer/OwnedItemManager.cpp), [DumbGuys/ClientSession.cs](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/Network/ClientSession.cs)
 
@@ -119,7 +113,7 @@ IInputProviderが方向・ジャンプ入力を提供し、移動戦略が異な
 
 **利点・代償と検証範囲**
 
-モーターはUnity物理と接地検査に依存します。斜面、移動床、ジャンプ中の効果変更、通信補正にはプレイ検証が必要です。戦略インターフェースだけで合格は示せません。
+モーターはUnity物理と接地判定に依存します。斜面、移動床、ジャンプ中の効果変更、通信補正を組み合わせて扱う必要があります。
 
 [DumbGuys/IInputProvider.cs (restore-1121)](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/Player/IInputProvider.cs), [DumbGuys/IMovementStrategy.cs (restore-1121)](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/Player/IMovementStrategy.cs), [DumbGuys/CharacterMotor.cs (restore-1121)](https://github.com/YSL-RyuDo/DumbGuys/blob/6c30b670a68da9a89d8ad0445de376cd620a21a7/Assets/Scripts/Player/CharacterMotor.cs)
 
@@ -130,10 +124,6 @@ IInputProviderが方向・ジャンプ入力を提供し、移動戦略が異な
 Unity scene: [Assets/Scenes/LoginScene.unity](Assets/Scenes/LoginScene.unity)
 
 [DumbGuysServer](https://github.com/YSL-RyuDo/DumbGuysServer)
-
-## 開発・検証範囲
-
-後続のクライアント実装はmainから分岐したrestore-1121を参照してください。「完成」というコミット名を現行の通しプレイ検証と同一視しません。素材・依存関係の元のクレジットを維持します。
 
 ## 関連リポジトリ
 
