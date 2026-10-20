@@ -2,7 +2,38 @@
 
 [English](README.md) · [Korean](README.ko.md) · [Japanese](README.ja.md)
 
+**C++ · C# · Unity** · Development archive
+
+[Explore the case](https://ysl-ryudo.github.io/en/work/dumbguys/) · [Portfolio](https://ysl-ryudo.github.io/en/)
+
+
 A Unity multiplayer obstacle-game project with a separate C++ server.
+
+## The engineering problem
+
+Accounts, rooms and player appearance need to carry through the lobby and match flow. A client and server must also be reviewed at compatible revisions.
+
+## My implementation
+
+I worked on account/connection handling, room and player state, store/appearance data and client-side lobby/match integration.
+
+### Implementation overview · conceptual flow
+
+```mermaid
+flowchart LR
+    N0["Account / connection"] --> N1
+    N1["Lobby / room"] --> N2
+    N2["Match / player state"] --> N3
+    N3["Store / appearance"]
+```
+
+### Development videos
+
+[![DumbGuys — DumbGuys full play](https://i.ytimg.com/vi/Z4tffAvRjJs/hqdefault.jpg)](https://www.youtube.com/watch?v=Z4tffAvRjJs)
+
+- [DumbGuys full play](https://www.youtube.com/watch?v=Z4tffAvRjJs)
+
+Recorded project demonstrations; the contribution section below identifies my work within the game.
 
 ## My contribution
 
@@ -29,3 +60,7 @@ Open the project with the Unity version recorded in [ProjectVersion.txt](Project
 ## Development and verification scope
 
 Use restore-1121 when inspecting the later client implementation; it has diverged from main. A commit message saying 'complete' is not a substitute for a current end-to-end playtest. Assets and dependencies retain their original credits.
+
+## How to evaluate the work
+
+Compare the server baseline with the client's later restore-1121 branch before a demo. The archive documents implementation scope, not a newly measured performance result.
